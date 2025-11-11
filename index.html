@@ -1,104 +1,148 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UNISWOP • Sepolia Testnet</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 <style>
 :root{
   --bg:#0d111c;
-  --panel:#141a2a;
+  --panel:#151b2c;
   --accent1:#ff007a;
   --accent2:#ff4ecd;
-  --text:#f2f3f5;
-  --muted:#9ca3af;
-  --border:#1f2937;
+  --text:#f5f6fa;
+  --sub:#9ca3af;
   --field:#111827;
-  --blur:20px;
+  --border:#1f2937;
+  --blur:24px;
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;}
 body{
-  margin:0;min-height:100vh;
-  background:radial-gradient(circle at 0 0,#1b1e2a,#0d111c);
-  font-family:Inter,system-ui,Arial,sans-serif;
+  margin:0;
+  background:radial-gradient(circle at 10% -10%,#1a2033,#0d111c);
+  font-family:"Inter",sans-serif;
   color:var(--text);
-  display:flex;justify-content:center;align-items:center;
-  padding:40px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
 }
 .app{
-  width:min(440px,94vw);
+  width:min(440px,95vw);
 }
 .header{
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:22px;
 }
 .logo{
-  font-weight:700;font-size:22px;
+  font-weight:800;font-size:24px;
   background:linear-gradient(90deg,var(--accent2),var(--accent1));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-0.5px;
 }
 .connect{
-  border:1px solid var(--border);
-  background:var(--panel);
-  border-radius:999px;
-  padding:8px 14px;
-  font-size:13px;
-  color:var(--muted);
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent1));
+  color:#fff;
+  padding:10px 18px;
+  font-weight:600;
+  font-size:14px;
   cursor:pointer;
-  transition:all .2s;
+  transition:all .3s;
 }
-.connect:hover{color:var(--text);border-color:var(--accent1)}
+.connect:hover{
+  filter:brightness(1.15);
+}
 .card{
   backdrop-filter:blur(var(--blur));
-  background:rgba(17,23,39,0.65);
+  background:rgba(17,23,39,0.7);
   border:1px solid var(--border);
   border-radius:20px;
   padding:18px;
-  box-shadow:0 8px 40px rgba(0,0,0,.4);
+  box-shadow:0 8px 40px rgba(0,0,0,.45);
+  transition:all .3s;
 }
-.token-row{
-  display:flex;align-items:center;justify-content:space-between;
+.card:hover{
+  border-color:#263450;
+  box-shadow:0 8px 50px rgba(0,0,0,.55);
+}
+.token-box{
   background:var(--field);
   border:1px solid var(--border);
-  border-radius:16px;
-  padding:14px 16px;margin-top:10px;
+  border-radius:18px;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
 }
-.token-row input{
-  width:60%;text-align:right;
-  background:transparent;border:0;
-  color:var(--text);font-size:22px;font-weight:600;
+.token-box input{
+  width:60%;
+  background:transparent;
+  border:0;
+  color:var(--text);
+  text-align:right;
+  font-size:22px;
+  font-weight:600;
 }
-.token-row input:focus{outline:none}
-.token-select{
-  display:flex;align-items:center;gap:6px;
-  font-weight:600;cursor:pointer;
+.token-box input:focus{outline:none;}
+select{
+  background:transparent;
+  border:0;
+  color:var(--text);
+  font-size:17px;
+  font-weight:600;
+  cursor:pointer;
 }
-.token-select select{
-  background:transparent;border:0;color:var(--text);font-size:16px;font-weight:600;
-  appearance:none;
-}
-.swap-arrow{
-  text-align:center;margin:10px 0;color:var(--muted);
+.arrow{
+  text-align:center;
+  margin:12px 0;
+  color:var(--sub);
+  font-size:18px;
 }
 .btn-swap{
-  width:100%;border:0;border-radius:16px;
+  width:100%;
+  border:0;
+  border-radius:16px;
   background:linear-gradient(90deg,var(--accent2),var(--accent1));
-  color:#fff;font-weight:700;font-size:16px;
-  padding:14px;margin-top:14px;cursor:pointer;
+  color:#fff;
+  font-weight:700;
+  font-size:17px;
+  padding:14px;
+  margin-top:10px;
+  cursor:pointer;
   transition:all .25s;
 }
-.btn-swap:hover{filter:brightness(1.1);}
-.info{
-  margin-top:10px;color:var(--muted);font-size:13px;text-align:center;
+.btn-swap:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.1);
 }
-.rate{margin-top:6px;text-align:right;font-size:13px;color:var(--muted);}
+.rate{
+  margin-top:10px;
+  color:var(--sub);
+  font-size:13px;
+  text-align:center;
+}
 pre{
-  margin-top:16px;padding:10px 12px;border-radius:12px;
-  background:#0c111b;border:1px solid #1f2937;
-  font-size:12px;color:#b4c5ff;max-height:200px;overflow:auto;
+  margin-top:14px;
+  background:#0c111b;
+  border:1px solid #1f2937;
+  border-radius:12px;
+  padding:10px;
+  font-size:12px;
+  color:#b4c5ff;
+  max-height:180px;
+  overflow:auto;
 }
-.footer{text-align:center;margin-top:12px;color:#9fb0d9;font-size:11px;}
+.footer{
+  text-align:center;
+  color:var(--sub);
+  font-size:11px;
+  margin-top:16px;
+}
 </style>
 </head>
 <body>
@@ -107,74 +151,76 @@ pre{
     <div class="logo">UNISWOP</div>
     <button id="btnConnect" class="connect">Connect Wallet</button>
   </div>
+
   <div class="card">
-    <div class="token-row">
-      <div class="token-select"><select id="tokenA"></select></div>
-      <input id="amtA" placeholder="0.0" inputmode="decimal">
+    <div class="token-box">
+      <select id="tokenA"></select>
+      <input id="amtA" placeholder="0.0" inputmode="decimal" />
     </div>
-    <div class="swap-arrow">↓</div>
-    <div class="token-row">
-      <div class="token-select"><select id="tokenB"></select></div>
-      <input id="amtB" placeholder="0.0" disabled>
+    <div class="arrow">↓</div>
+    <div class="token-box">
+      <select id="tokenB"></select>
+      <input id="amtB" placeholder="0.0" disabled />
     </div>
-    <div class="rate" id="rateText">Estimasi: -</div>
     <button id="btnSwap" class="btn-swap">Swap</button>
-    <div class="info" id="infoText">Mode simulasi — belum eksekusi kontrak.</div>
+    <div class="rate" id="rateText">1 ETH ≈ 2000 USDC</div>
     <pre id="log">log siap...</pre>
   </div>
-  <div class="footer">by thdx • Sepolia Testnet</div>
+
+  <div class="footer">UNISWOP © 2025 • Testnet Sepolia</div>
 </div>
 
 <script>
 const TOKENS=[
- {sym:"ETH",addr:"ETH_NATIVE",dec:18},
- {sym:"WETH",addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14",dec:18},
- {sym:"USDC",addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",dec:6},
+  {sym:"ETH",addr:"ETH_NATIVE",dec:18},
+  {sym:"WETH",addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14",dec:18},
+  {sym:"USDC",addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",dec:6}
 ];
 const DEMO_RATES={
- "ETH/USDC":2000,"USDC/ETH":1/2000,
- "WETH/USDC":2000,"USDC/WETH":1/2000,
- "ETH/WETH":1,"WETH/ETH":1
+  "ETH/USDC":2000,"USDC/ETH":1/2000,
+  "WETH/USDC":2000,"USDC/WETH":1/2000,
+  "ETH/WETH":1,"WETH/ETH":1
 };
 const ERC20_ABI=["function balanceOf(address) view returns (uint256)"];
 const $=id=>document.getElementById(id);
-const log=(m)=>{const el=$("log");el.textContent+=(el.textContent?"\n":"")+m;el.scrollTop=el.scrollHeight;}
+const log=m=>{$("log").textContent+=( $("log").textContent?"\n":"")+m;};
 let provider,signer,me;
 function initTokens(){
- const a=$("tokenA"),b=$("tokenB");
- a.innerHTML=b.innerHTML="";
- TOKENS.forEach((t,i)=>{
-  const o1=document.createElement("option");o1.value=i;o1.textContent=t.sym;a.appendChild(o1);
-  const o2=document.createElement("option");o2.value=i;o2.textContent=t.sym;b.appendChild(o2);
- });
- a.value=TOKENS.findIndex(t=>t.sym==="ETH");
- b.value=TOKENS.findIndex(t=>t.sym==="USDC");
+  const a=$("tokenA"),b=$("tokenB");
+  a.innerHTML=b.innerHTML="";
+  TOKENS.forEach((t,i)=>{
+    const o1=document.createElement("option");o1.value=i;o1.textContent=t.sym;a.appendChild(o1);
+    const o2=document.createElement("option");o2.value=i;o2.textContent=t.sym;b.appendChild(o2);
+  });
+  a.value=TOKENS.findIndex(t=>t.sym==="ETH");
+  b.value=TOKENS.findIndex(t=>t.sym==="USDC");
 }
 async function connect(){
- try{
-  if(!window.ethereum)throw new Error("MetaMask tidak ada");
-  provider=new ethers.providers.Web3Provider(window.ethereum,"any");
-  await provider.send("eth_requestAccounts",[]);
-  signer=provider.getSigner();me=await signer.getAddress();
-  log("✅ Connected "+me);
- }catch(e){log("❌ "+(e.message||e));}
+  try{
+    if(!window.ethereum)throw new Error("MetaMask tidak tersedia");
+    provider=new ethers.providers.Web3Provider(window.ethereum,"any");
+    await provider.send("eth_requestAccounts",[]);
+    signer=provider.getSigner();me=await signer.getAddress();
+    log("✅ Wallet tersambung: "+me);
+  }catch(e){log("❌ "+(e.message||e));}
 }
 function estimate(){
- const ia=+$("tokenA").value,ib=+$("tokenB").value;
- const ta=TOKENS[ia],tb=TOKENS[ib];
- const amt=parseFloat($("amtA").value)||0;
- if(!amt||ia===ib){$("amtB").value="";$("rateText").textContent="Estimasi: -";return;}
- const key=`${ta.sym}/${tb.sym}`;const r=DEMO_RATES[key];
- if(!r){$("amtB").value="";$("rateText").textContent="Estimasi tidak ada";return;}
- const out=amt*r;$("amtB").value=out.toFixed(tb.dec>6?6:tb.dec);
- $("rateText").textContent=`1 ${ta.sym} ≈ ${(out/amt).toFixed(4)} ${tb.sym}`;
+  const ia=+$("tokenA").value,ib=+$("tokenB").value;
+  const ta=TOKENS[ia],tb=TOKENS[ib];
+  const amt=parseFloat($("amtA").value)||0;
+  if(!amt||ia===ib){$("amtB").value="";$("rateText").textContent="Estimasi: -";return;}
+  const rate=DEMO_RATES[`${ta.sym}/${tb.sym}`];
+  if(!rate){$("amtB").value="";$("rateText").textContent="Tidak ada data";return;}
+  const out=amt*rate;
+  $("amtB").value=out.toFixed(tb.dec>6?6:tb.dec);
+  $("rateText").textContent=`1 ${ta.sym} ≈ ${(out/amt).toFixed(4)} ${tb.sym}`;
 }
-initTokens();
 $("btnConnect").onclick=connect;
 $("tokenA").onchange=estimate;
 $("tokenB").onchange=estimate;
 $("amtA").oninput=estimate;
 $("btnSwap").onclick=()=>log("💡 Simulasi swap — belum kirim transaksi");
+initTokens();
 </script>
 </body>
 </html>
