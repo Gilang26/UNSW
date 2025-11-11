@@ -1,110 +1,85 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UNISWOP • Sepolia Testnet</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>UNISWOP • Sepolia</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 <style>
-:root{--bg:#0d111c;--panel:#151b2c;--accent1:#ff007a;--accent2:#ff4ecd;--text:#f5f6fa;--sub:#9ca3af;--field:#111827;--border:#1f2937;--blur:24px}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% -10%,#1a2033,#0d111c);
-font-family:"Inter",sans-serif;color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:24px}
-.app{width:min(480px,95vw)}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-.left{display:flex;align-items:center;gap:8px}
-.logo-icon svg{height:28px;width:auto}
-.logo-text{font-weight:800;font-size:22px;background:linear-gradient(90deg,var(--accent2),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.actions{display:flex;align-items:center;gap:8px}
-.icon-btn{background:rgba(255,255,255,.05);border:1px solid #2a3349;border-radius:50%;width:34px;height:34px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.connect{border:0;border-radius:12px;background:linear-gradient(90deg,var(--accent2),var(--accent1));color:#fff;padding:10px 18px;font-weight:600;font-size:14px;cursor:pointer}
-.card{backdrop-filter:blur(var(--blur));background:rgba(17,23,39,.7);border:1px solid var(--border);border-radius:20px;padding:18px}
-.row{display:flex;gap:8px}
-.token-box{background:var(--field);border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.token-box input{width:60%;background:transparent;border:0;color:var(--text);text-align:right;font-size:22px;font-weight:700}
-.balance{color:var(--sub);font-size:12px;text-align:right;margin-bottom:10px}
-select{background:transparent;border:0;color:var(--text);font-size:17px;font-weight:600;cursor:pointer}
-.swap-center{text-align:center;margin:12px 0}
-.swap-btn{width:34px;height:34px;border-radius:50%;border:1px solid #2a3349;background:rgba(255,255,255,.05);color:#fff;cursor:pointer}
-.btn-swap{width:100%;border:0;border-radius:16px;background:linear-gradient(90deg,var(--accent2),var(--accent1));color:#fff;font-weight:800;font-size:17px;padding:14px;margin-top:10px;cursor:pointer}
-.rate{margin-top:10px;color:var(--sub);font-size:13px;text-align:center}
-pre{margin-top:14px;background:#0c111b;border:1px solid #1f2937;border-radius:12px;padding:10px;font-size:12px;color:#b4c5ff;max-height:220px;overflow:auto}
-.footer{text-align:center;color:var(--sub);font-size:11px;margin-top:16px}
-.badge{position:fixed;right:12px;bottom:12px;background:#0c111b;border:1px solid #2a3349;color:#b4c5ff;padding:8px 10px;border-radius:10px;font-size:12px;display:none}
-.badge.show{display:block}
+:root{--bg:#0d111c;--panel:#151b2c;--b:#202a40;--txt:#f5f6fa;--sub:#9ca3af;--g1:#ff4ecd;--g2:#ff007a}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% -10%,#1a2033,#0d111c);
+font-family:Inter,system-ui,sans-serif;color:var(--txt);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.app{width:min(460px,95vw)}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px}
+.brand span{background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2));cursor:pointer}
+.card{background:#0f1626;border:1px solid var(--b);border-radius:16px;padding:16px}
+.box{background:#0c111b;border:1px solid var(--b);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin:6px 0}
+.box input{width:55%;background:transparent;border:0;color:#fff;text-align:right;font-size:20px;font-weight:800;outline:none}
+select{background:transparent;border:0;color:#fff;font-size:16px;font-weight:700;outline:none}
+.center{text-align:center;margin:8px 0}
+.flip{width:34px;height:34px;border-radius:50%;border:1px solid var(--b);background:#121a2a;color:#fff;cursor:pointer}
 .small{font-size:12px;color:var(--sub)}
-.slippage{background:var(--field);border:1px solid var(--border);border-radius:12px;padding:10px;display:flex;gap:8px;margin-top:8px}
-.slippage input{flex:1;background:transparent;border:0;color:#fff}
+.row{display:flex;gap:8px;align-items:center;background:#0c111b;border:1px solid var(--b);border-radius:12px;padding:8px;margin:6px 0}
+.row input{flex:1;background:transparent;border:0;color:#fff}
+.swap{width:100%;margin-top:10px}
+pre{margin-top:10px;background:#0c111b;border:1px solid var(--b);border-radius:12px;padding:10px;font-size:12px;color:#b5c8ff;max-height:220px;overflow:auto}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="left">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24"><defs><linearGradient id="uniGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#ff4ecd"/><stop offset="100%" style="stop-color:#ff007a"/></linearGradient></defs><path fill="url(#uniGrad)" d="M17.6,9.5c.6,0,1.1,.3,1.5,.7c.8-.1,1.5-.5,2-1c-.3,.8-.8,1.4-1.5,1.8c.7-.1,1.3-.2,1.9-.5c-.4,.7-1,1.3-1.7,1.7c-1.1,.8-2.3,1.4-3.6,1.7c-1.1,2.5-3.7,4.3-6.6,4.3c-2.5,0-4.8-1.2-6.2-3c-.1,0-.1,0-.2,0c-1.4,0-2.7-.5-3.7-1.4c1.2,.1,2.3-.3,3.1-1C1.9,12.1,1,11,.7,9.7c.5,.1,1,.3,1.5,.3c-1-.7-1.7-1.8-1.7-3c.3,.2,.6,.3,1,.5c1,.6,2.1,1,3.3,1.2C5.5,7.2,8.1,5.6,11,5.6C14.7,5.6,17.6,7.5,17.6,9.5z"/></svg>
-      </div>
-      <div class="logo-text">UNISWOP</div>
-    </div>
-    <div class="actions">
-      <button id="btnConnect" class="connect">Connect</button>
-    </div>
+    <div class="brand">🦄 <span>UNISWOP</span></div>
+    <button id="btnConnect" class="btn">Connect</button>
   </div>
 
   <div class="card">
-    <div class="token-box">
+    <div class="box">
       <select id="tokenA"></select>
       <input id="amtA" placeholder="0.0" inputmode="decimal" />
     </div>
-    <div class="balance" id="balA">Balance: -</div>
+    <div class="small" id="balA">Balance: -</div>
 
-    <div class="swap-center">
-      <button id="flipBtn" class="swap-btn">⇅</button>
-    </div>
+    <div class="center"><button id="flip" class="flip">⇅</button></div>
 
-    <div class="token-box">
+    <div class="box">
       <select id="tokenB"></select>
       <input id="amtB" placeholder="0.0" disabled />
     </div>
-    <div class="balance" id="balB">Balance: -</div>
+    <div class="small" id="balB">Balance: -</div>
 
-    <div class="slippage">
-      <input id="slippage" value="0.5" /> <span class="small">% slippage</span>
-      <input id="deadline" value="20" /> <span class="small">min</span>
+    <div class="row">
+      <input id="slippage" value="0.5"/><span class="small">% slippage</span>
+      <input id="deadline" value="20"/><span class="small">min</span>
     </div>
 
-    <button id="btnSwap" class="btn-swap">Swap</button>
-    <div class="rate" id="rateText">Estimasi: -</div>
+    <button id="btnSwap" class="btn swap">Swap</button>
+    <div class="small" id="rate">Estimasi: -</div>
     <pre id="log">log siap...</pre>
   </div>
-
-  <div class="footer">UNISWOP © 2025 • Testnet Sepolia</div>
 </div>
 
-<div id="badge" class="badge">🔄 Updating…</div>
-
 <script>
-/* ===== Config ===== */
+/* ===== Config (ringkas) ===== */
 const CHAIN = { id:11155111, hex:"0xaa36a7", name:"Sepolia", explorer:"https://sepolia.etherscan.io" };
-const ROUTER = "0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3";
-const FACTORY= "0xF62c03E08ada871A0bEb309762E260a7a6a880E6";
+const ROUTER = "0x eE567Fe1712Faf6149d80dA1E6934E354124CfE3".replace(" ",""); // rapikan spasi accidental
+const FACTORY= "0xF62c03E08ada871A0bEb309762E260a7a6a880E6"; // tidak dipakai berat-berat di UI ringkas
 
-const TOKENS=[
-  {sym:"ETH", addr:"ETH_NATIVE", dec:18},
-  {sym:"WETH",addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14",dec:18},
-  {sym:"USDC",addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",dec:6},
+const TOKENS = [
+  {sym:"ETH",  addr:"ETH_NATIVE", dec:18},
+  {sym:"WETH", addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14", dec:18},
+  {sym:"USDC", addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238", dec:6},
 ];
-const WETH_ADDR = TOKENS.find(t=>t.sym==="WETH").addr;
+const WETH_ADDR = TOKENS[1].addr;
 
-const ERC20_ABI=[
+const ERC20 = [
   "function balanceOf(address) view returns (uint256)",
   "function allowance(address,address) view returns (uint256)",
-  "function approve(address,uint256) returns (bool)",
-  "function decimals() view returns (uint8)",
-  "function symbol() view returns (string)"
+  "function approve(address,uint256) returns (bool)"
 ];
-const FACTORY_ABI=[ "function getPair(address,address) external view returns (address)" ];
-const ROUTER_ABI=[
+const ROUTER_ABI = [
   "function getAmountsOut(uint256,address[]) view returns (uint256[])",
   "function swapExactTokensForTokens(uint256,uint256,address[],address,uint256) returns (uint256[])",
   "function swapExactETHForTokens(uint256,address[],address,uint256) payable returns (uint256[])",
@@ -112,12 +87,12 @@ const ROUTER_ABI=[
 ];
 
 const $=id=>document.getElementById(id);
-const log= m=>{ const el=$("log"); el.textContent+=(el.textContent? "\n":"")+m; el.scrollTop=el.scrollHeight; console.log(m); };
+const log=m=>{const el=$("log");el.textContent+=(el.textContent?"\n":"")+m;el.scrollTop=el.scrollHeight;console.log(m)};
 
-let provider, signer, me, balanceTimer;
+let provider, signer, me, balTimer;
 
-/* ===== UI Init ===== */
-function initTokens(){
+/* ===== UI init ===== */
+function initUI(){
   ["tokenA","tokenB"].forEach(id=>{
     const el=$(id); el.innerHTML="";
     TOKENS.forEach((t,i)=> el.add(new Option(t.sym,i)));
@@ -125,198 +100,146 @@ function initTokens(){
   $("tokenA").value=1; // WETH
   $("tokenB").value=2; // USDC
 }
-initTokens();
+initUI();
 
 /* ===== Wallet ===== */
 async function ensureProvider(){
   if(!window.ethereum) throw new Error("MetaMask belum tersedia");
-  if(!provider) provider=new ethers.providers.Web3Provider(window.ethereum,"any");
+  if(!provider) provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 }
 async function connect(){
   try{
     await ensureProvider();
     await provider.send("eth_requestAccounts",[]);
-    signer=provider.getSigner(); me=await signer.getAddress();
-    const net=await provider.getNetwork();
+    signer = provider.getSigner(); me = await signer.getAddress();
+    const net = await provider.getNetwork();
     if(net.chainId!==CHAIN.id){
-      await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN.hex}]});
+      await window.ethereum.request({method:"wallet_switchEthereumChain", params:[{chainId:CHAIN.hex}]});
     }
-    $("btnConnect").textContent=me.slice(0,6)+"…"+me.slice(-4);
+    $("btnConnect").textContent = me.slice(0,6)+"…"+me.slice(-4);
     log(`✅ Connected: ${me} (chain ${CHAIN.id})`);
-    startAutoBalances();
-    estimateOut(); // first estimate if any
+    refreshBalances(); clearInterval(balTimer); balTimer=setInterval(refreshBalances,10000);
+    estimate();
   }catch(e){ log("❌ Connect error: "+(e.message||e)); }
+}
+$("btnConnect").onclick = connect;
+
+/* ===== Helpers ===== */
+function sanitizeNumber(s){
+  s = String(s||"").trim().replace(/,/g,"");       // buang koma
+  if(!s) return "";                                 // kosong
+  if(!/^\d*\.?\d*$/.test(s)) return "";             // hanya digit & titik
+  if(s.startsWith(".")) s = "0"+s;                  // ".5" -> "0.5"
+  if(s.endsWith("."))  s = s.slice(0,-1);           // "1." -> "1"
+  return s;
+}
+function parseUnitsSafe(s, dec){
+  const clean = sanitizeNumber(s);
+  if(!clean || isNaN(Number(clean))) throw new Error("invalid decimal value");
+  return ethers.utils.parseUnits(clean, dec);
+}
+function toHuman(bn, dec){ return Number(ethers.utils.formatUnits(bn, dec)); }
+function pathOf(a,b){
+  const A=TOKENS[+$("tokenA").value], B=TOKENS[+$("tokenB").value];
+  const src=(A.addr==="ETH_NATIVE")? WETH_ADDR : A.addr;
+  const dst=(B.addr==="ETH_NATIVE")? WETH_ADDR : B.addr;
+  return [src,dst];
 }
 
 /* ===== Balances ===== */
-async function readBalanceOf(tokenAddr,dec){
-  try{
-    if(!provider||!me) return "0";
-    if(tokenAddr==="ETH_NATIVE"){
-      const v=await provider.getBalance(me);
-      return ethers.utils.formatUnits(v,dec);
-    }
-    const c=new ethers.Contract(tokenAddr,ERC20_ABI,provider);
-    const v=await c.balanceOf(me);
-    return ethers.utils.formatUnits(v,dec);
-  }catch{ return "0"; }
+async function balanceOf(token){
+  if(!provider||!me) return "0";
+  if(token.addr==="ETH_NATIVE"){
+    const v=await provider.getBalance(me);
+    return ethers.utils.formatUnits(v, token.dec);
+  }
+  const c=new ethers.Contract(token.addr, ERC20, provider);
+  const v=await c.balanceOf(me);
+  return ethers.utils.formatUnits(v, token.dec);
 }
 async function refreshBalances(){
-  if(!provider||!me) return;
-  $("badge").classList.add("show");
   try{
     const ta=TOKENS[+$("tokenA").value], tb=TOKENS[+$("tokenB").value];
-    const [ba,bb]=await Promise.all([readBalanceOf(ta.addr,ta.dec), readBalanceOf(tb.addr,tb.dec)]);
-    $("balA").textContent=`Balance: ${parseFloat(ba).toFixed(4)} ${ta.sym}`;
-    $("balB").textContent=`Balance: ${parseFloat(bb).toFixed(4)} ${tb.sym}`;
-  }finally{ setTimeout(()=>$("badge").classList.remove("show"),400); }
-}
-function startAutoBalances(){
-  clearInterval(balanceTimer);
-  refreshBalances();
-  balanceTimer=setInterval(refreshBalances,10000);
+    const [ba,bb] = await Promise.all([balanceOf(ta), balanceOf(tb)]);
+    $("balA").textContent = `Balance: ${(+ba).toFixed(4)} ${ta.sym}`;
+    $("balB").textContent = `Balance: ${(+bb).toFixed(4)} ${tb.sym}`;
+  }catch{}
 }
 
-/* ===== Helpers ===== */
-function toUnits(val,dec){ return ethers.utils.parseUnits(String(val||"0"), dec); }
-function fromUnits(bn,dec){ return Number(ethers.utils.formatUnits(bn,dec)); }
-
-function buildPath(a,b){
-  const A=TOKENS[+$("tokenA").value], B=TOKENS[+$("tokenB").value];
-  const src = (A.addr==="ETH_NATIVE") ? WETH_ADDR : A.addr;
-  const dst = (B.addr==="ETH_NATIVE") ? WETH_ADDR : B.addr;
-  return [src, dst];
-}
-
-/* ===== Estimasi getAmountsOut ===== */
-async function estimateOut(){
+/* ===== Estimasi ===== */
+async function estimate(){
   try{
     if(!provider) return;
-    const ia=+$("tokenA").value, ib=+$("tokenB").value;
-    const ta=TOKENS[ia], tb=TOKENS[ib];
-    const amtIn=parseFloat($("amtA").value||"0");
-    if(!amtIn || ia===ib){ $("amtB").value=""; $("rateText").textContent="Estimasi: -"; return; }
-
-    const router=new ethers.Contract(ROUTER,ROUTER_ABI,provider);
-    const path=buildPath();
-    const amountIn=toUnits(amtIn, ta.dec);
-
-    const amounts = await router.getAmountsOut(amountIn, path);
+    const ta=TOKENS[+$("tokenA").value], tb=TOKENS[+$("tokenB").value];
+    const inStr = sanitizeNumber($("amtA").value);
+    if(!inStr || +inStr===0 || ta===tb){ $("amtB").value=""; $("rate").textContent="Estimasi: -"; return; }
+    const amountIn = parseUnitsSafe(inStr, ta.dec);
+    const router = new ethers.Contract(ROUTER, ROUTER_ABI, provider);
+    const amounts = await router.getAmountsOut(amountIn, pathOf());
     const out = amounts[amounts.length-1];
-    const outHuman = fromUnits(out, tb.dec);
+    const outHuman = toHuman(out, tb.dec);
     $("amtB").value = tb.dec>6 ? outHuman.toFixed(6) : outHuman.toFixed(tb.dec);
-
-    const rate = outHuman/amtIn;
-    $("rateText").textContent = `1 ${ta.sym} ≈ ${rate.toFixed(6)} ${tb.sym}`;
+    $("rate").textContent = `1 ${ta.sym} ≈ ${(outHuman/+inStr).toFixed(6)} ${tb.sym}`;
   }catch(e){
     $("amtB").value="";
-    $("rateText").textContent="Estimasi gagal (no liquidity / path not found)";
+    $("rate").textContent="Estimasi gagal (no liquidity / path not found)";
   }
 }
-$("amtA").oninput=estimateOut;
-["tokenA","tokenB"].forEach(id=>$(id).onchange=()=>{estimateOut(); refreshBalances();});
-$("flipBtn").onclick=()=>{
+$("amtA").oninput=()=>{ $("amtA").value=sanitizeNumber($("amtA").value); estimate(); };
+["tokenA","tokenB"].forEach(id=>$(id).onchange=()=>{ estimate(); refreshBalances(); });
+$("flip").onclick=()=>{
   const a=$("tokenA"), b=$("tokenB"); [a.value,b.value]=[b.value,a.value];
   const x=$("amtA"), y=$("amtB"); [x.value,y.value]=[y.value,x.value];
-  estimateOut(); refreshBalances();
+  estimate(); refreshBalances();
 };
 
-/* ===== Approve helper ===== */
-async function ensureAllowance(tokenAddr, owner, spender, needed){
-  const c=new ethers.Contract(tokenAddr,ERC20_ABI,signer);
-  const cur=await c.allowance(owner,spender);
+/* ===== Approve ===== */
+async function ensureAllowance(tokenAddr, needed){
+  const erc = new ethers.Contract(tokenAddr, ERC20, signer);
+  const cur = await erc.allowance(me, ROUTER);
   if(cur.gte(needed)) return;
-  const tx=await c.approve(spender, needed);
-  log(`🧾 Approve ${tokenAddr} → ${tx.hash}`);
-  await tx.wait();
-  log(`✅ Approve success`);
+  const tx = await erc.approve(ROUTER, needed);
+  log(`🧾 Approve → ${tx.hash}`); await tx.wait(); log("✅ Approve success");
 }
 
 /* ===== Swap ===== */
 $("btnSwap").onclick = async ()=>{
   try{
-    await ensureProvider();
-    if(!signer) await connect();
-    const net=await provider.getNetwork();
-    if(net.chainId!==CHAIN.id) throw new Error(`Switch ke ${CHAIN.name} dulu`);
+    await ensureProvider(); if(!signer) await connect();
+    const net=await provider.getNetwork(); if(net.chainId!==CHAIN.id) throw new Error(`Switch ke ${CHAIN.name} dulu`);
+    const ta=TOKENS[+$("tokenA").value], tb=TOKENS[+$("tokenB").value];
+    if(ta.addr===tb.addr) throw new Error("Token input/output tidak boleh sama.");
+    const inStr=sanitizeNumber($("amtA").value); if(!inStr || +inStr<=0) throw new Error("Isi jumlah input yang valid.");
 
-    const ia=+$("tokenA").value, ib=+$("tokenB").value;
-    if(ia===ib) throw new Error("Token input/output tidak boleh sama.");
-    const ta=TOKENS[ia], tb=TOKENS[ib];
-
-    const amountInStr = $("amtA").value.trim();
-    if(!amountInStr || Number(amountInStr)<=0) throw new Error("Isi jumlah input yang valid.");
-    const amountIn = toUnits(amountInStr, ta.dec);
-
-    const sl = Math.max(0, Math.min(100, parseFloat($("slippage").value)||0.5)); // %
-    const dl = Math.max(1, parseInt($("deadline").value)||20); // menit
+    const sl = Math.max(0, Math.min(100, parseFloat(sanitizeNumber($("slippage").value)||"0.5")));
+    const dl = Math.max(1, parseInt(sanitizeNumber($("deadline").value)||"20"));
+    const amountIn = parseUnitsSafe(inStr, ta.dec);
     const deadlineTs = Math.floor(Date.now()/1000) + dl*60;
 
-    const router=new ethers.Contract(ROUTER,ROUTER_ABI,signer);
-    const path=buildPath();
-
-    // Estimasi untuk minOut
+    const router = new ethers.Contract(ROUTER, ROUTER_ABI, signer);
+    const path = pathOf();
     const amounts = await router.getAmountsOut(amountIn, path);
-    const amountOut = amounts[amounts.length-1];
-    const amountOutMin = amountOut.mul(ethers.BigNumber.from(10000 - Math.floor(sl*100))).div(10000);
+    const out = amounts[amounts.length-1];
+    const amountOutMin = out.mul(10000 - Math.floor(sl*100)).div(10000);
 
-    // Mode swap berdasarkan ETH/WETH
-    if(ta.addr==="ETH_NATIVE"){
-      // swapExactETHForTokens
-      log("🚀 swapExactETHForTokens...");
-      const tx = await router.swapExactETHForTokens(
-        amountOutMin,
-        path,
-        me,
-        deadlineTs,
-        { value: amountIn, gasLimit: 600000 }
-      );
-      log(`⏳ TX: ${tx.hash}`);
-      const rc=await tx.wait();
-      log(`✅ Swap success. Block ${rc.blockNumber} • ${CHAIN.explorer}/tx/${tx.hash}`);
-    } else if(tb.addr==="ETH_NATIVE"){
-      // swapExactTokensForETH
-      await ensureAllowance(ta.addr, me, ROUTER, amountIn);
-      log("🚀 swapExactTokensForETH...");
-      const tx = await router.swapExactTokensForETH(
-        amountIn,
-        amountOutMin,
-        path,
-        me,
-        deadlineTs,
-        { gasLimit: 650000 }
-      );
-      log(`⏳ TX: ${tx.hash}`);
-      const rc=await tx.wait();
-      log(`✅ Swap success. Block ${rc.blockNumber} • ${CHAIN.explorer}/tx/${tx.hash}`);
-    } else {
-      // swapExactTokensForTokens
-      await ensureAllowance(ta.addr, me, ROUTER, amountIn);
-      log("🚀 swapExactTokensForTokens...");
-      const tx = await router.swapExactTokensForTokens(
-        amountIn,
-        amountOutMin,
-        path,
-        me,
-        deadlineTs,
-        { gasLimit: 650000 }
-      );
-      log(`⏳ TX: ${tx.hash}`);
-      const rc=await tx.wait();
-      log(`✅ Swap success. Block ${rc.blockNumber} • ${CHAIN.explorer}/tx/${tx.hash}`);
+    let tx;
+    if(ta.addr==="ETH_NATIVE"){ // swapExactETHForTokens
+      tx = await router.swapExactETHForTokens(amountOutMin, path, me, deadlineTs, { value: amountIn, gasLimit: 650000 });
+    } else if(tb.addr==="ETH_NATIVE"){ // swapExactTokensForETH
+      await ensureAllowance(ta.addr, amountIn);
+      tx = await router.swapExactTokensForETH(amountIn, amountOutMin, path, me, deadlineTs, { gasLimit: 650000 });
+    } else { // swapExactTokensForTokens
+      await ensureAllowance(ta.addr, amountIn);
+      tx = await router.swapExactTokensForTokens(amountIn, amountOutMin, path, me, deadlineTs, { gasLimit: 650000 });
     }
-
-    // refresh saldo
-    await refreshBalances();
-    // refresh estimasi
-    await estimateOut();
+    log(`⏳ TX: ${tx.hash}`);
+    const rc=await tx.wait();
+    log(`✅ Swap success • Block ${rc.blockNumber} • ${CHAIN.explorer}/tx/${tx.hash}`);
+    refreshBalances(); estimate();
   }catch(e){
     log("❌ Swap error: "+(e.data?.message || e.reason || e.message || e));
   }
 };
-
-/* ===== Bind connect ===== */
-$("btnConnect").onclick=connect;
 </script>
 </body>
 </html>
