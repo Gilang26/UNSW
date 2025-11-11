@@ -92,7 +92,6 @@ pre{
   <div class="header">
     <div class="left">
       <div class="logo-icon">
-        <!-- inline UNI SVG -->
         <svg viewBox="0 0 24 24">
           <defs><linearGradient id="uniGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" style="stop-color:#ff4ecd"/><stop offset="100%" style="stop-color:#ff007a"/>
@@ -107,7 +106,12 @@ pre{
       <div class="logo-text">UNISWOP</div>
     </div>
     <div class="actions">
-      <button id="gearBtn" class="icon-btn">⚙️</button>
+      <!-- Minimalist menu icon -->
+      <button id="menuBtn" class="icon-btn" title="Menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
       <button id="profileBtn" class="icon-btn">👤</button>
       <button id="btnConnect" class="connect">Connect</button>
     </div>
@@ -191,9 +195,9 @@ $("btnConnect").onclick=connect;
 ["tokenA","tokenB","amtA"].forEach(id=>$(`#${id}`).oninput=estimate);
 $("flipBtn").onclick=flipTokens;
 $("btnSwap").onclick=()=>log("💡 Simulasi swap — belum kirim transaksi");
-$("gearBtn").onclick=()=>$("menu").classList.toggle("show");
+$("menuBtn").onclick=()=>$("menu").classList.toggle("show");
 document.addEventListener("click",e=>{
-  if(!e.target.closest("#gearBtn")&&!e.target.closest("#menu"))$("menu").classList.remove("show");
+  if(!e.target.closest("#menuBtn")&&!e.target.closest("#menu"))$("menu").classList.remove("show");
 });
 initTokens();
 </script>
