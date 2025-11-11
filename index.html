@@ -1,109 +1,79 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UNISWOP Lite</title>
-<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>0x Swap API Tester (Sepolia)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
 <style>
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:#0c111e;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh}
-.card{background:#111827;border:1px solid #1f2937;border-radius:16px;padding:20px;width:min(420px,90vw);box-shadow:0 8px 25px rgba(0,0,0,.4)}
-h2{text-align:center;margin:0 0 10px;font-weight:800}
-.row{display:flex;justify-content:space-between;align-items:center;background:#1a2235;border-radius:12px;padding:10px 14px;margin-top:10px}
-input{background:transparent;border:0;color:#fff;font-size:20px;text-align:right;width:100%;outline:none}
-.btn{width:100%;margin-top:12px;padding:12px;border:0;border-radius:10px;background:linear-gradient(90deg,#ff4ecd,#ff007a);color:#fff;font-weight:700;cursor:pointer}
-.token{background:#222b44;border:1px solid #2a3557;border-radius:10px;padding:6px 12px;cursor:pointer}
-p{font-size:12px;opacity:.8;margin:6px 0;text-align:center}
-pre{background:#0b1120;border:1px solid #1f2b3e;border-radius:10px;padding:10px;font-size:12px;height:120px;overflow:auto;margin-top:10px}
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #0c0f11;
+    color: #e6f1ee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  h1 { color: #00ffa2; }
+  button {
+    background: linear-gradient(90deg,#00ffa2,#00c3ff);
+    border: none;
+    color: #001a10;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  pre {
+    background: #0f1917;
+    padding: 16px;
+    border-radius: 10px;
+    color: #9effd0;
+    width: min(600px, 90vw);
+    overflow-x: auto;
+    margin-top: 20px;
+    font-size: 13px;
+  }
 </style>
 </head>
 <body>
-<div class="card">
-  <h2>UNISWOP Lite</h2>
-  <button id="btnConnect" class="btn">Connect Wallet</button>
-
-  <div class="row">
-    <input id="fromAmt" placeholder="0.0" inputmode="decimal">
-    <div id="fromBtn" class="token">ETH</div>
-  </div>
-  <div class="row" style="justify-content:center;">⬇️</div>
-  <div class="row">
-    <input id="toAmt" placeholder="0.0" disabled>
-    <div id="toBtn" class="token">USDC</div>
-  </div>
-  <button id="btnSwap" class="btn">Swap</button>
-  <p id="routerInfo">Router: auto</p>
+  <h1>🧩 0x Swap API Tester — Sepolia</h1>
+  <p>Pair: <b>ETH → USDC</b> (chainId: 11155111)</p>
+  <button id="test">🚀 Fetch Quote</button>
   <pre id="log">log siap...</pre>
-</div>
 
 <script>
-const CHAIN={id:11155111,hex:"0xaa36a7"};
-const TOKENS={
- ETH:{addr:"ETH",dec:18}, 
- WETH:{addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14",dec:18},
- USDC:{addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",dec:6}
+const log = (msg) => {
+  const el = document.getElementById("log");
+  el.textContent += "\n" + msg;
+  el.scrollTop = el.scrollHeight;
+  console.log(msg);
 };
-const ROUTERS=[
- {name:"V2-A",addr:"0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3"},
- {name:"V2-B",addr:"0x3A9D48AB9751398BbFa63ad67599Bb04e4BdF98b"}
-];
-const ERC20=["function balanceOf(address)view returns(uint)","function approve(address,uint)returns(bool)"];
-const ROUTER=["function getAmountsOut(uint,address[])view returns(uint[])","function swapExactETHForTokens(uint,address[],address,uint)payable returns(uint[])","function swapExactTokensForETH(uint,uint,address[],address,uint)returns(uint[])","function swapExactTokensForTokens(uint,uint,address[],address,uint)returns(uint[])"];
-const WETH_ABI=["function deposit()payable","function withdraw(uint)"];
-const $=id=>document.getElementById(id);const log=m=>{const el=$("log");el.textContent+=(el.textContent?"\n":"")+m;el.scrollTop=el.scrollHeight};
-let provider,signer,me,from=TOKENS.ETH,to=TOKENS.USDC,best=null;
-async function connect(){try{
- if(!window.ethereum)throw new Error("Install MetaMask");
- provider=new ethers.providers.Web3Provider(window.ethereum,"any");
- await provider.send("eth_requestAccounts",[]);
- signer=provider.getSigner();me=await signer.getAddress();
- const net=await provider.getNetwork();
- if(net.chainId!==CHAIN.id)await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN.hex}]});
- log("✅ Connected: "+me);
-}catch(e){log("❌ "+e.message)}}
-function addr(t){return t.addr==="ETH"?TOKENS.WETH.addr:t.addr}
-async function estimate(){
- try{
-  const v=$("fromAmt").value.trim();
-  if(!v)return $("toAmt").value="";
-  const amt=ethers.utils.parseUnits(v,from.dec);
-  if((from===TOKENS.ETH&&to===TOKENS.WETH)||(from===TOKENS.WETH&&to===TOKENS.ETH)){best={wrap:true};$("toAmt").value=v;return;}
-  let bestOut=ethers.BigNumber.from(0);
-  for(const r of ROUTERS){
-   try{
-    const c=new ethers.Contract(r.addr,ROUTER,provider);
-    const o=await c.getAmountsOut(amt,[addr(from),addr(to)]);
-    if(o[1].gt(bestOut)){bestOut=o[1];best=r;}
-   }catch{}
+
+async function fetchQuote() {
+  const endpoint = "https://api.0x.org/swap/v1/price";
+  const params = new URLSearchParams({
+    sellToken: "ETH",
+    buyToken: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
+    sellAmount: "1000000000000000000", // 1 ETH
+    chainId: "11155111"
+  });
+  const url = `${endpoint}?${params}`;
+  log("⏳ Fetching: " + url);
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    log("✅ Response:\n" + JSON.stringify(json, null, 2));
+  } catch (e) {
+    log("❌ Error: " + e.message);
   }
-  if(bestOut.eq(0)){log("⚠️ No liquidity");$("toAmt").value="";return;}
-  $("routerInfo").textContent="Router: "+best.name;
-  $("toAmt").value=ethers.utils.formatUnits(bestOut,to.dec);
- }catch(e){log("⚠️ Estimasi gagal "+e.message)}}
-async function swap(){
- try{
-  if(!signer)await connect();
-  const v=$("fromAmt").value.trim();if(!v)return;
-  const amt=ethers.utils.parseUnits(v,from.dec);const dline=Math.floor(Date.now()/1000)+900;
-  if(best?.wrap){const w=new ethers.Contract(TOKENS.WETH.addr,WETH_ABI,signer);
-   if(from===TOKENS.ETH){const tx=await w.deposit({value:amt});log("Wrap TX: "+tx.hash);await tx.wait();log("✅ Wrap success")}
-   else{const tx=await w.withdraw(amt);log("Unwrap TX: "+tx.hash);await tx.wait();log("✅ Unwrap success")}
-   return;}
-  if(!best)return log("⚠️ Estimasi dulu");
-  const r=new ethers.Contract(best.addr,ROUTER,signer);const path=[addr(from),addr(to)];
-  let tx;
-  if(from.addr==="ETH"){tx=await r.swapExactETHForTokens(0,path,me,dline,{value:amt});}
-  else if(to.addr==="ETH"){const t=new ethers.Contract(from.addr,ERC20,signer);await t.approve(best.addr,amt);tx=await r.swapExactTokensForETH(amt,0,path,me,dline);}
-  else{const t=new ethers.Contract(from.addr,ERC20,signer);await t.approve(best.addr,amt);tx=await r.swapExactTokensForTokens(amt,0,path,me,dline);}
-  log("⏳ TX: "+tx.hash);const rc=await tx.wait();log("✅ Swap success • Block "+rc.blockNumber);
- }catch(e){log("❌ Swap error: "+(e.reason||e.message))}
 }
-$("btnConnect").onclick=connect;
-$("fromBtn").onclick=()=>{from=from===TOKENS.ETH?TOKENS.USDC:TOKENS.ETH;$("fromBtn").textContent=from===TOKENS.ETH?"ETH":"USDC";estimate();}
-$("toBtn").onclick=()=>{to=to===TOKENS.ETH?TOKENS.USDC:TOKENS.ETH;$("toBtn").textContent=to===TOKENS.ETH?"ETH":"USDC";estimate();}
-$("fromAmt").oninput=estimate;
-$("btnSwap").onclick=swap;
+
+document.getElementById("test").onclick = fetchQuote;
 </script>
 </body>
 </html>
