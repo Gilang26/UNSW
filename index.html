@@ -3,44 +3,54 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>UNISWOP • Sepolia</title>
+<title>UNISWOP • Sepolia (Add Token)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 <style>
-:root{--bg:#0d111c;--panel:#151b2c;--b:#202a40;--txt:#f5f6fa;--sub:#9ca3af;--g1:#ff4ecd;--g2:#ff007a}
-*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% -10%,#1a2033,#0d111c);
+:root{--bg:#0d111c;--panel:#151b2c;--b:#202a40;--txt:#f5f6fa;--sub:#9ca3af;--g1:#22c55e;--g2:#16a34a}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 10% -10%,#14221a,#0d111c);
 font-family:Inter,system-ui,sans-serif;color:var(--txt);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.app{width:min(460px,95vw)}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px}
-.brand span{background:linear-gradient(90deg,var(--g1),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--g1),var(--g2));cursor:pointer}
-.card{background:#0f1626;border:1px solid var(--b);border-radius:16px;padding:16px}
-.box{background:#0c111b;border:1px solid var(--b);border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin:6px 0}
-.box input{width:55%;background:transparent;border:0;color:#fff;text-align:right;font-size:20px;font-weight:800;outline:none}
-select{background:transparent;border:0;color:#fff;font-size:16px;font-weight:700;outline:none}
-.center{text-align:center;margin:8px 0}
-.flip{width:34px;height:34px;border-radius:50%;border:1px solid var(--b);background:#121a2a;color:#fff;cursor:pointer}
+.app{width:min(540px,96vw)}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;color:var(--g1)}
+.btn{border:0;border-radius:12px;padding:8px 12px;font-weight:700;color:#06110a;background:linear-gradient(90deg,var(--g1),var(--g2));cursor:pointer}
+.card{background:#0f1626;border:1px solid var(--b);border-radius:12px;padding:14px}
+.box{background:#0c111b;border:1px solid var(--b);border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center;margin:8px 0}
+.box input{width:58%;background:transparent;border:0;color:#fff;text-align:right;font-size:18px;font-weight:700;outline:none}
+select{background:transparent;border:0;color:#fff;font-size:15px;font-weight:700;outline:none}
 .small{font-size:12px;color:var(--sub)}
-.swap{width:100%;margin-top:10px}
-pre{margin-top:10px;background:#0c111b;border:1px solid var(--b);border-radius:12px;padding:10px;font-size:12px;color:#b5c8ff;max-height:220px;overflow:auto}
+.row{display:flex;gap:8px;align-items:center;margin-top:8px}
+.inputFull{width:100%;padding:8px;border-radius:8px;border:1px solid var(--b);background:#08100a;color:#fff}
+.pre{margin-top:10px;background:#071014;border:1px solid var(--b);border-radius:10px;padding:10px;font-size:13px;color:#bfe8c9;max-height:240px;overflow:auto}
+.addRow{display:flex;gap:8px;margin-top:6px}
+.smallBtn{padding:8px 10px;border-radius:8px;border:0;background:#223a23;color:#dff8e6;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="brand">🦄 <span>UNISWOP</span></div>
+    <div class="brand">🦄 UNISWOP</div>
     <button id="btnConnect" class="btn">Connect</button>
   </div>
 
   <div class="card">
+    <!-- Add token -->
+    <div class="small">Tambah token (masukkan contract address ERC20)</div>
+    <div class="addRow">
+      <input id="addAddr" class="inputFull" placeholder="0x..." />
+      <button id="btnAdd" class="smallBtn">Add</button>
+    </div>
+
+    <hr style="border:0;border-top:1px solid #12241a;margin:10px 0">
+
+    <!-- Swap UI -->
     <div class="box">
       <select id="tokenA"></select>
       <input id="amtA" placeholder="0.0" inputmode="decimal" />
     </div>
     <div class="small" id="balA">Balance: -</div>
 
-    <div class="center"><button id="flip" class="flip">⇅</button></div>
+    <div style="text-align:center;margin:8px 0"><button id="flip" class="smallBtn">⇅</button></div>
 
     <div class="box">
       <select id="tokenB"></select>
@@ -48,9 +58,12 @@ pre{margin-top:10px;background:#0c111b;border:1px solid var(--b);border-radius:1
     </div>
     <div class="small" id="balB">Balance: -</div>
 
-    <button id="btnSwap" class="btn swap">Swap</button>
+    <div class="row" style="margin-top:10px">
+      <button id="btnSwap" class="btn" style="flex:1">Swap</button>
+    </div>
+
     <div class="small" id="rate">Estimasi: -</div>
-    <pre id="log">log siap...</pre>
+    <div class="pre" id="log">log siap...</div>
   </div>
 </div>
 
@@ -58,21 +71,22 @@ pre{margin-top:10px;background:#0c111b;border:1px solid var(--b);border-radius:1
 /* ===== Config (Dual Router) ===== */
 const CHAIN = { id:11155111, hex:"0xaa36a7", name:"Sepolia", explorer:"https://sepolia.etherscan.io" };
 const ROUTERS = [
-  "0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3", // router utama
-  "0x3A9D48AB9751398BbFa63ad67599Bb04e4BdF98b"  // router backup
+  "0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3",
+  "0x3A9D48AB9751398BbFa63ad67599Bb04e4BdF98b"
 ];
-const TOKENS = [
-  {sym:"ETH",  addr:"ETH_NATIVE", dec:18},
-  {sym:"WETH", addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14", dec:18},
-  {sym:"USDC", addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238", dec:6},
+
+let TOKENS = [
+  { sym:"ETH", addr:"ETH_NATIVE", dec:18 },
+  { sym:"WETH", addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14", dec:18 },
+  { sym:"USDC", addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238", dec:6 }
 ];
 const WETH_ADDR = TOKENS[1].addr;
 
-const ERC20 = [
-  "function balanceOf(address) view returns (uint256)",
-  "function allowance(address,address) view returns (uint256)",
-  "function approve(address,uint256) returns (bool)"
-];
+const ERC20_ABI = ["function symbol() view returns (string)","function decimals() view returns (uint8)",
+                   "function balanceOf(address) view returns (uint256)",
+                   "function allowance(address,address) view returns (uint256)",
+                   "function approve(address,uint256) returns (bool)"];
+
 const ROUTER_ABI = [
   "function getAmountsOut(uint256,address[]) view returns (uint256[])",
   "function swapExactTokensForTokens(uint256,uint256,address[],address,uint256) returns (uint256[])",
@@ -80,20 +94,23 @@ const ROUTER_ABI = [
   "function swapExactTokensForETH(uint256,uint256,address[],address,uint256) returns (uint256[])"
 ];
 
-const $=id=>document.getElementById(id);
-const log=m=>{const el=$("log");el.textContent+=(el.textContent?"\n":"")+m;el.scrollTop=el.scrollHeight;console.log(m)};
+const $ = id => document.getElementById(id);
+const log = m => { const el=$("log"); el.textContent += (el.textContent? "\n":"") + m; el.scrollTop = el.scrollHeight; console.log(m); };
 
 let provider, signer, me, balTimer;
 
 /* ===== UI init ===== */
-function initUI(){
+function refreshTokenSelects(){
   ["tokenA","tokenB"].forEach(id=>{
-    const el=$(id); el.innerHTML="";
-    TOKENS.forEach((t,i)=> el.add(new Option(t.sym,i)));
+    const sel=$(id);
+    const prev = sel.value;
+    sel.innerHTML = "";
+    TOKENS.forEach((t,i)=> sel.add(new Option(`${t.sym} ${t.addr==="ETH_NATIVE"?"":("("+short(t.addr)+")")}`, i)));
+    if(prev!==null && prev!==undefined && prev < TOKENS.length) sel.value = prev;
   });
-  $("tokenA").value=1; $("tokenB").value=2;
 }
-initUI();
+function short(a){ return a.slice(0,6)+"…"+a.slice(-4); }
+refreshTokenSelects();
 
 /* ===== Wallet ===== */
 async function ensureProvider(){
@@ -103,19 +120,36 @@ async function ensureProvider(){
 async function connect(){
   try{
     await ensureProvider();
-    await provider.send("eth_requestAccounts",[]);
+    await provider.send("eth_requestAccounts", []);
     signer = provider.getSigner(); me = await signer.getAddress();
     const net = await provider.getNetwork();
-    if(net.chainId!==CHAIN.id){
-      await window.ethereum.request({method:"wallet_switchEthereumChain", params:[{chainId:CHAIN.hex}]});
+    if(net.chainId !== CHAIN.id){
+      await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{chainId:CHAIN.hex}]});
     }
     $("btnConnect").textContent = me.slice(0,6)+"…"+me.slice(-4);
     log(`✅ Connected: ${me} (chain ${CHAIN.id})`);
-    refreshBalances(); clearInterval(balTimer); balTimer=setInterval(refreshBalances,10000);
+    refreshBalances(); clearInterval(balTimer); balTimer = setInterval(refreshBalances,10000);
     estimate();
   }catch(e){ log("❌ Connect error: "+(e.message||e)); }
 }
 $("btnConnect").onclick = connect;
+
+/* ===== Add token by contract ===== */
+async function addTokenByAddress(addr){
+  try{
+    if(!/^0x[0-9a-fA-F]{40}$/.test(addr)) throw new Error("Address tidak valid");
+    await ensureProvider();
+    const readProvider = provider; // use same provider
+    const c = new ethers.Contract(addr, ERC20_ABI, readProvider);
+    let sym="TKN", dec=18;
+    try{ sym = await c.symbol(); } catch(e){ sym = short(addr); }
+    try{ dec = await c.decimals(); } catch(e){ dec = 18; }
+    TOKENS.push({ sym, addr, dec: Number(dec) });
+    refreshTokenSelects();
+    log(`✅ Token added: ${sym} (${addr}), decimals=${dec}`);
+  }catch(e){ log("❌ Add token error: "+(e.message||e)); }
+}
+$("btnAdd").onclick = ()=> addTokenByAddress($("addAddr").value.trim());
 
 /* ===== Helpers ===== */
 function sanitizeNumber(s){
@@ -124,100 +158,145 @@ function sanitizeNumber(s){
   if(s.startsWith(".")) s="0"+s; if(s.endsWith(".")) s=s.slice(0,-1);
   return s;
 }
-function parseUnitsSafe(s,dec){
+function parseUnitsSafe(s, dec){
   const clean = sanitizeNumber(s);
   if(!clean || isNaN(Number(clean))) throw new Error("invalid decimal value");
   return ethers.utils.parseUnits(clean, dec);
 }
-function toHuman(bn,dec){ return Number(ethers.utils.formatUnits(bn,dec)); }
-function pathOf(){const A=TOKENS[+$("tokenA").value],B=TOKENS[+$("tokenB").value];
-return[(A.addr==="ETH_NATIVE"?WETH_ADDR:A.addr),(B.addr==="ETH_NATIVE"?WETH_ADDR:B.addr)];}
+function toHuman(bn, dec){ return Number(ethers.utils.formatUnits(bn, dec)); }
+function pathOf(aIndex, bIndex){
+  const A = TOKENS[aIndex], B = TOKENS[bIndex];
+  const src = (A.addr==="ETH_NATIVE")? WETH_ADDR : A.addr;
+  const dst = (B.addr==="ETH_NATIVE")? WETH_ADDR : B.addr;
+  return [src, dst];
+}
 
 /* ===== Balances ===== */
 async function balanceOf(token){
-  if(!provider||!me)return"0";
+  if(!provider || !me) return "0";
   if(token.addr==="ETH_NATIVE"){
-    const v=await provider.getBalance(me);
+    const v = await provider.getBalance(me);
     return ethers.utils.formatUnits(v, token.dec);
   }
-  const c=new ethers.Contract(token.addr, ERC20, provider);
-  const v=await c.balanceOf(me);
+  const c = new ethers.Contract(token.addr, ERC20_ABI, provider);
+  const v = await c.balanceOf(me);
   return ethers.utils.formatUnits(v, token.dec);
 }
 async function refreshBalances(){
   try{
-    const ta=TOKENS[+$("tokenA").value],tb=TOKENS[+$("tokenB").value];
-    const [ba,bb]=await Promise.all([balanceOf(ta),balanceOf(tb)]);
-    $("balA").textContent=`Balance: ${(+ba).toFixed(4)} ${ta.sym}`;
-    $("balB").textContent=`Balance: ${(+bb).toFixed(4)} ${tb.sym}`;
-  }catch{}
+    const aIndex = +$("tokenA").value, bIndex = +$("tokenB").value;
+    const [ta, tb] = [TOKENS[aIndex], TOKENS[bIndex]];
+    const [ba, bb] = await Promise.all([balanceOf(ta), balanceOf(tb)]);
+    $("balA").textContent = `Balance: ${(+ba).toFixed(6)} ${ta.sym}`;
+    $("balB").textContent = `Balance: ${(+bb).toFixed(6)} ${tb.sym}`;
+  }catch(e){}
 }
 
-/* ===== Estimasi ===== */
+/* ===== Estimasi (router0) ===== */
 async function estimate(){
   try{
-    if(!provider)return;
-    const ta=TOKENS[+$("tokenA").value],tb=TOKENS[+$("tokenB").value];
-    const inStr=sanitizeNumber($("amtA").value);
-    if(!inStr||+inStr===0||ta===tb){$("amtB").value="";$("rate").textContent="Estimasi: -";return;}
-    const amountIn=parseUnitsSafe(inStr,ta.dec);
-    const router=new ethers.Contract(ROUTERS[0],ROUTER_ABI,provider);
-    const amounts=await router.getAmountsOut(amountIn,pathOf());
-    const out=amounts[amounts.length-1];const outH=toHuman(out,tb.dec);
-    $("amtB").value=tb.dec>6?outH.toFixed(6):outH.toFixed(tb.dec);
-    $("rate").textContent=`1 ${ta.sym} ≈ ${(outH/+inStr).toFixed(6)} ${tb.sym}`;
-  }catch{ $("amtB").value="";$("rate").textContent="Estimasi gagal (no liquidity / path not found)"; }
+    if(!provider) return;
+    const aIndex = +$("tokenA").value, bIndex = +$("tokenB").value;
+    const ta = TOKENS[aIndex], tb = TOKENS[bIndex];
+    const inStr = sanitizeNumber($("amtA").value);
+    if(!inStr || +inStr===0 || aIndex===bIndex){ $("amtB").value=""; $("rate").textContent="Estimasi: -"; return; }
+    const amountIn = parseUnitsSafe(inStr, ta.dec);
+    const router = new ethers.Contract(ROUTERS[0], ROUTER_ABI, provider);
+    const amounts = await router.getAmountsOut(amountIn, pathOf(aIndex, bIndex));
+    const out = amounts[amounts.length-1];
+    const outHuman = toHuman(out, tb.dec);
+    $("amtB").value = tb.dec>6 ? outHuman.toFixed(6) : outHuman.toFixed(tb.dec);
+    $("rate").textContent = `1 ${ta.sym} ≈ ${(outHuman/+inStr).toFixed(6)} ${tb.sym}`;
+  }catch(e){
+    $("amtB").value=""; $("rate").textContent = "Estimasi gagal (no liquidity / path not found)";
+  }
 }
-$("amtA").oninput=()=>{ $("amtA").value=sanitizeNumber($("amtA").value); estimate(); };
-["tokenA","tokenB"].forEach(id=>$(id).onchange=()=>{estimate();refreshBalances();});
-$("flip").onclick=()=>{const a=$("tokenA"),b=$("tokenB");[a.value,b.value]=[b.value,a.value];const x=$("amtA"),y=$("amtB");[x.value,y.value]=[y.value,x.value];estimate();refreshBalances();};
+$("amtA").oninput = ()=>{ $("amtA").value = sanitizeNumber($("amtA").value); estimate(); };
+["tokenA","tokenB"].forEach(id => $(id).onchange = ()=>{ refreshBalances(); estimate(); });
 
-/* ===== Approve ===== */
-async function ensureAllowance(tokenAddr,needed){
-  const erc=new ethers.Contract(tokenAddr,ERC20,signer);
-  const cur=await erc.allowance(me,ROUTERS[0]);
-  if(cur.gte(needed))return;
-  const tx=await erc.approve(ROUTERS[0],needed);
-  log(`🧾 Approve → ${tx.hash}`);await tx.wait();log("✅ Approve success");
+/* ===== Ensure allowance for specific router ===== */
+async function ensureAllowance(tokenAddr, needed, routerAddr){
+  const erc = new ethers.Contract(tokenAddr, ERC20_ABI, signer);
+  const cur = await erc.allowance(me, routerAddr);
+  if(cur.gte(needed)) return;
+  const tx = await erc.approve(routerAddr, needed);
+  log(`🧾 Approve → ${tx.hash} (to ${routerAddr.slice(0,10)}...)`);
+  await tx.wait(); log("✅ Approve success");
 }
 
-/* ===== Swap ===== */
-$("btnSwap").onclick=async()=>{
+/* ===== Wrap / Unwrap WETH (native) ===== */
+async function wrapETH(amountIn){
+  const abi = ["function deposit() payable","function withdraw(uint256)"];
+  const weth = new ethers.Contract(WETH_ADDR, abi, signer);
+  const tx = await weth.deposit({ value: amountIn, gasLimit:120000 });
+  log(`⏳ Wrap TX: ${tx.hash}`); await tx.wait(); log("✅ Wrapped ETH → WETH");
+}
+async function unwrapWETH(amount){
+  const abi = ["function deposit() payable","function withdraw(uint256)"];
+  const weth = new ethers.Contract(WETH_ADDR, abi, signer);
+  const tx = await weth.withdraw(amount, { gasLimit:120000 });
+  log(`⏳ Unwrap TX: ${tx.hash}`); await tx.wait(); log("✅ Unwrapped WETH → ETH");
+}
+
+/* ===== Swap (dual-router fallback) ===== */
+$("btnSwap").onclick = async () => {
   try{
-    await ensureProvider();if(!signer)await connect();
-    const net=await provider.getNetwork();if(net.chainId!==CHAIN.id)throw new Error(`Switch ke ${CHAIN.name} dulu`);
-    const ta=TOKENS[+$("tokenA").value],tb=TOKENS[+$("tokenB").value];
-    if(ta.addr===tb.addr)throw new Error("Token input/output tidak boleh sama.");
-    const inStr=sanitizeNumber($("amtA").value);if(!inStr||+inStr<=0)throw new Error("Isi jumlah input yang valid.");
-    const amountIn=parseUnitsSafe(inStr,ta.dec);
-    const path=pathOf();const deadline=Math.floor(Date.now()/1000)+1200;
-    let success=false;
+    await ensureProvider();
+    if(!signer) await connect();
+    const net = await provider.getNetwork();
+    if(net.chainId !== CHAIN.id) throw new Error(`Switch ke ${CHAIN.name} dulu`);
+    const aIndex = +$("tokenA").value, bIndex = +$("tokenB").value;
+    const ta = TOKENS[aIndex], tb = TOKENS[bIndex];
+    if(aIndex===bIndex) throw new Error("Token input/output sama.");
+    const inStr = sanitizeNumber($("amtA").value); if(!inStr || +inStr<=0) throw new Error("Isi jumlah input yang valid.");
+    const amountIn = parseUnitsSafe(inStr, ta.dec);
+
+    // ETH <-> WETH fast path
+    if(ta.sym==="ETH" && tb.sym==="WETH"){
+      await wrapETH(amountIn); refreshBalances(); estimate(); return;
+    }
+    if(ta.sym==="WETH" && tb.sym==="ETH"){
+      await unwrapWETH(amountIn); refreshBalances(); estimate(); return;
+    }
+
+    const path = pathOf(aIndex, bIndex);
+    const deadline = Math.floor(Date.now()/1000) + 20*60;
+    let succeeded=false;
     for(const routerAddr of ROUTERS){
       try{
-        const router=new ethers.Contract(routerAddr,ROUTER_ABI,signer);
-        const amounts=await router.getAmountsOut(amountIn,path);
-        const out=amounts[amounts.length-1];
-        const minOut=out.mul(9950).div(10000); // default 0.5% tolerance
+        const router = new ethers.Contract(routerAddr, ROUTER_ABI, signer);
+        // estimate amountsOut
+        const amounts = await router.getAmountsOut(amountIn, path);
+        const out = amounts[amounts.length-1];
+        const minOut = out.mul(9950).div(10000); // 0.5% tolerance
+
         let tx;
         if(ta.addr==="ETH_NATIVE"){
-          tx=await router.swapExactETHForTokens(minOut,path,me,deadline,{value:amountIn,gasLimit:650000});
-        }else if(tb.addr==="ETH_NATIVE"){
-          await ensureAllowance(ta.addr,amountIn);
-          tx=await router.swapExactTokensForETH(amountIn,minOut,path,me,deadline,{gasLimit:650000});
-        }else{
-          await ensureAllowance(ta.addr,amountIn);
-          tx=await router.swapExactTokensForTokens(amountIn,minOut,path,me,deadline,{gasLimit:650000});
+          tx = await router.swapExactETHForTokens(minOut, path, me, deadline, { value: amountIn, gasLimit:650000 });
+        } else if(tb.addr==="ETH_NATIVE"){
+          await ensureAllowance(ta.addr, amountIn, routerAddr);
+          tx = await router.swapExactTokensForETH(amountIn, minOut, path, me, deadline, { gasLimit:650000 });
+        } else {
+          await ensureAllowance(ta.addr, amountIn, routerAddr);
+          tx = await router.swapExactTokensForTokens(amountIn, minOut, path, me, deadline, { gasLimit:650000 });
         }
-        log(`⏳ TX: ${tx.hash}`);
-        const rc=await tx.wait();
-        log(`✅ Swap success via ${routerAddr.slice(0,10)}… block ${rc.blockNumber} • ${CHAIN.explorer}/tx/${tx.hash}`);
-        success=true;break;
-      }catch(e){log(`⚠️ Router ${routerAddr.slice(0,10)} gagal: ${e.reason||e.message}`);}
+        log(`⏳ TX via ${routerAddr.slice(0,10)}… : ${tx.hash}`);
+        const rc = await tx.wait();
+        log(`✅ Swap OK via ${routerAddr.slice(0,10)} • block ${rc.blockNumber} • ${CHAIN.explorer}/tx/${tx.hash}`);
+        succeeded=true; break;
+      }catch(e){
+        log(`⚠️ Router ${routerAddr.slice(0,10)} failed: ${e.reason||e.message||e}`);
+        // try next router
+      }
     }
-    if(!success)throw new Error("Semua router gagal.");
-    refreshBalances();estimate();
-  }catch(e){log("❌ Swap error: "+(e.data?.message||e.reason||e.message||e));}
+    if(!succeeded) throw new Error("Semua router gagal — cek liquidity / approval.");
+    refreshBalances(); estimate();
+  }catch(e){ log("❌ Swap error: "+(e.data?.message||e.reason||e.message||e)); }
 };
+
+/* ===== Flip tokens ===== */
+$("flip").onclick = ()=>{ const a=$("tokenA"), b=$("tokenB"); [a.value,b.value]=[b.value,a.value]; const x=$("amtA"), y=$("amtB"); [x.value,y.value]=[y.value,x.value]; refreshBalances(); estimate(); };
+
 </script>
 </body>
 </html>
