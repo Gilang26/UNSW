@@ -1,79 +1,255 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>0x Swap API Tester (Sepolia)</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UNISWOP • Mini Aggregator (Sepolia)</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: #0c0f11;
-    color: #e6f1ee;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-  }
-  h1 { color: #00ffa2; }
-  button {
-    background: linear-gradient(90deg,#00ffa2,#00c3ff);
-    border: none;
-    color: #001a10;
-    font-weight: 700;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
-  pre {
-    background: #0f1917;
-    padding: 16px;
-    border-radius: 10px;
-    color: #9effd0;
-    width: min(600px, 90vw);
-    overflow-x: auto;
-    margin-top: 20px;
-    font-size: 13px;
-  }
+  :root { --bg:#0b111b; --card:#121a23; --mut:#22304a; --fld:#0f1625; --acc:#ff007a; --acc2:#ff4ecd; --txt:#e6edf3; }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(90% 120% at 10% -10%,#0f1830,#060a12);color:var(--txt);font-family:Poppins,system-ui,Arial,sans-serif;padding:24px}
+  .card{width:min(440px,94vw);background:var(--card);border:1px solid var(--mut);border-radius:16px;padding:18px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+  h2{margin:0 0 8px;font-weight:800;text-align:center}
+  .row{display:flex;gap:8px;align-items:center;margin-top:10px}
+  .box{flex:1;background:var(--fld);border:1px solid var(--mut);border-radius:12px;padding:10px 12px}
+  .top{display:flex;justify-content:space-between;align-items:center;font-size:12px;opacity:.85}
+  input{width:100%;margin-top:6px;border:0;outline:0;background:transparent;color:#fff;font-size:20px;text-align:right}
+  .pill{padding:6px 10px;border-radius:10px;background:#1b2640;border:1px solid #2b3d66;font-size:12px;cursor:pointer}
+  .btn{width:100%;margin-top:12px;padding:12px;border-radius:12px;border:0;cursor:pointer;font-weight:700;background:linear-gradient(90deg,var(--acc2),var(--acc));color:#fff}
+  .btn.sec{background:#1e2a45;border:1px solid #2a3e69}
+  .hint{font-size:12px;opacity:.85;margin-top:6px;text-align:center}
+  pre{background:#0a1424;border:1px solid #1a2a46;border-radius:12px;padding:10px;height:140px;overflow:auto;font-size:12px;margin-top:10px}
+  .divider{display:flex;justify-content:center;align-items:center;margin-top:6px;opacity:.7}
+  .mini{font-size:11px;opacity:.85}
 </style>
 </head>
 <body>
-  <h1>🧩 0x Swap API Tester — Sepolia</h1>
-  <p>Pair: <b>ETH → USDC</b> (chainId: 11155111)</p>
-  <button id="test">🚀 Fetch Quote</button>
-  <pre id="log">log siap...</pre>
+  <div class="card">
+    <h2>UNISWOP • Mini Aggregator</h2>
+    <button id="btnConnect" class="btn sec">🔌 Connect Wallet</button>
+
+    <!-- From -->
+    <div class="row">
+      <div class="box">
+        <div class="top">
+          <span class="mini">From</span>
+          <button id="fromToken" class="pill">WETH</button>
+        </div>
+        <input id="fromAmt" placeholder="0.0" inputmode="decimal">
+      </div>
+    </div>
+
+    <div class="divider">⬇️</div>
+
+    <!-- To -->
+    <div class="row">
+      <div class="box">
+        <div class="top">
+          <span class="mini">To (est.)</span>
+          <button id="toToken" class="pill">USDC</button>
+        </div>
+        <input id="toAmt" placeholder="0.0" disabled>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="box">
+        <div class="top">
+          <span class="mini">Slippage</span>
+          <span class="mini" id="routerInfo">Router: auto</span>
+        </div>
+        <input id="slip" value="0.5">
+      </div>
+      <div class="box" style="max-width:130px">
+        <div class="top"><span class="mini">Unit</span><span class="mini">&nbsp;</span></div>
+        <div class="mini" style="margin-top:10px;opacity:.9">%</div>
+      </div>
+    </div>
+
+    <button id="btnSwap" class="btn">🚀 Swap</button>
+    <div class="hint">Sepolia • auto pilih router terbaik</div>
+    <pre id="log">log siap...</pre>
+  </div>
 
 <script>
-const log = (msg) => {
-  const el = document.getElementById("log");
-  el.textContent += "\n" + msg;
-  el.scrollTop = el.scrollHeight;
-  console.log(msg);
+/** ===== Config Sepolia ===== */
+const CHAIN = { id:11155111, hex:"0xaa36a7" };
+const TOKENS = {
+  WETH: { symbol:"WETH", addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14", dec:18 },
+  USDC: { symbol:"USDC", addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238", dec:6 },
+  ETH : { symbol:"ETH" , addr:"ETH_NATIVE", dec:18 } // optional bila mau pakai native
 };
+// daftar router V2 yang aktif (yang kemarin kamu kasih)
+const ROUTERS = [
+  { name:"V2-A", addr:"0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3" },
+  { name:"V2-B", addr:"0x3A9D48AB9751398BbFa63ad67599Bb04e4BdF98b" },
+  { name:"V2-C", addr:"0x6418EEC70f50913ff0d756B48d32Ce7C02b47C47" }
+];
 
-async function fetchQuote() {
-  const endpoint = "https://api.0x.org/swap/v1/price";
-  const params = new URLSearchParams({
-    sellToken: "ETH",
-    buyToken: "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238",
-    sellAmount: "1000000000000000000", // 1 ETH
-    chainId: "11155111"
-  });
-  const url = `${endpoint}?${params}`;
-  log("⏳ Fetching: " + url);
+const ERC20_ABI = [
+  "function balanceOf(address) view returns (uint256)",
+  "function allowance(address,address) view returns (uint256)",
+  "function approve(address,uint256) returns (bool)"
+];
+const V2_ROUTER_ABI = [
+  "function getAmountsOut(uint256 amountIn, address[] calldata path) view returns (uint256[] memory amounts)",
+  "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) returns (uint[] memory amounts)",
+  "function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) returns (uint[] memory amounts)",
+  "function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) payable returns (uint[] memory amounts)"
+];
+const WETH_ABI = [
+  "function deposit() payable",
+  "function withdraw(uint256)"
+];
+
+const $ = id => document.getElementById(id);
+const log = m => { const el=$("log"); el.textContent += (el.textContent? "\n":"") + m; el.scrollTop = el.scrollHeight; console.log(m); };
+
+let provider, signer, me;
+let from = TOKENS.WETH;   // default
+let to   = TOKENS.USDC;   // default
+let bestRoute = null;     // {router, out}
+
+/** ===== Wallet ===== */
+async function connect() {
   try {
-    const res = await fetch(url);
-    const json = await res.json();
-    log("✅ Response:\n" + JSON.stringify(json, null, 2));
-  } catch (e) {
-    log("❌ Error: " + e.message);
+    if (!window.ethereum) throw new Error("Install MetaMask / OKX / Trust.");
+    provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+    await provider.send("eth_requestAccounts", []);
+    signer = provider.getSigner(); me = await signer.getAddress();
+    const n = await provider.getNetwork();
+    if (n.chainId !== CHAIN.id) {
+      await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{chainId:CHAIN.hex}] });
+    }
+    log(`✅ Connected: ${me}`);
+    estimate();
+  } catch (e) { log("❌ Connect error: " + (e.message||e)); }
+}
+
+/** ===== Helpers ===== */
+function aOf(tok){ return tok.addr==="ETH_NATIVE" ? TOKENS.WETH.addr : tok.addr; } // path pakai WETH jika ETH native
+function fmt(n,dec){ try{return ethers.utils.formatUnits(n,dec)}catch{return "0"} }
+function parse(v,dec){ return ethers.utils.parseUnits(String(v||"0"), dec); }
+function minOut(amountOut, slipPct){
+  // amountOut * (1 - slip/100)
+  const bps = Math.max(0, 10000 - Math.floor(slipPct*100)); // 0.5% => 9950
+  return amountOut.mul(bps).div(10000);
+}
+
+/** ===== Estimasi ===== */
+async function estimate(){
+  try{
+    if(!provider) return;
+    const v = $("fromAmt").value.trim();
+    if (!v){ $("toAmt").value=""; bestRoute=null; $("routerInfo").textContent="Router: auto"; return; }
+
+    const amtIn = parse(v, from.dec);
+
+    // Wrap/Unwrap 1:1 (jika ETH native dipakai)
+    if ((from===TOKENS.ETH && to===TOKENS.WETH) || (from===TOKENS.WETH && to===TOKENS.ETH)){
+      $("toAmt").value = v;
+      bestRoute = { wrap:true };
+      $("routerInfo").textContent = "Router: (wrap/unwrap 1:1)";
+      return;
+    }
+
+    const path = [ aOf(from), aOf(to) ];
+    let bestOut = ethers.BigNumber.from(0), best = null;
+
+    for (const r of ROUTERS){
+      try{
+        const c = new ethers.Contract(r.addr, V2_ROUTER_ABI, provider);
+        const amounts = await c.getAmountsOut(amtIn, path);
+        const out = amounts[amounts.length-1];
+        if (out.gt(bestOut)){ bestOut=out; best=r; }
+      }catch{} // skip router yang gagal
+    }
+
+    if (best){
+      bestRoute = { router: best, out: bestOut };
+      $("toAmt").value = fmt(bestOut, to.dec);
+      $("routerInfo").textContent = "Router: " + best.name;
+    } else {
+      bestRoute = null; $("toAmt").value=""; $("routerInfo").textContent="Router: (no route)";
+      log("⚠️ Estimasi gagal (no liquidity/route).");
+    }
+  }catch(e){ log("⚠️ Estimasi error: " + (e.message||e)); }
+}
+
+/** ===== Swap ===== */
+async function swap(){
+  try{
+    if(!signer) await connect();
+    const v = $("fromAmt").value.trim(); if(!v) return log("⚠️ Isi jumlah dulu.");
+    const amtIn = parse(v, from.dec);
+    const slip = Math.max(0, parseFloat($("slip").value||"0.5")); // default 0.5%
+    const deadline = Math.floor(Date.now()/1000) + 900;
+
+    // Wrap / Unwrap
+    if (bestRoute?.wrap){
+      const w = new ethers.Contract(TOKENS.WETH.addr, WETH_ABI, signer);
+      if (from===TOKENS.ETH){
+        const tx = await w.deposit({ value: amtIn });
+        log("⏳ Wrap ETH→WETH: " + tx.hash); await tx.wait(); log("✅ Wrap success");
+      }else{
+        const tx = await w.withdraw(amtIn);
+        log("⏳ Unwrap WETH→ETH: " + tx.hash); await tx.wait(); log("✅ Unwrap success");
+      }
+      return;
+    }
+
+    if (!bestRoute) return log("⚠️ Tidak ada route, coba jumlah/arah lain.");
+    const routerAddr = bestRoute.router.addr;
+    const outMin = minOut(bestRoute.out, slip);
+    const path = [ aOf(from), aOf(to) ];
+    const r = new ethers.Contract(routerAddr, V2_ROUTER_ABI, signer);
+
+    let tx;
+    if (from.addr==="ETH_NATIVE"){
+      // swapExactETHForTokens
+      tx = await r.swapExactETHForTokens(outMin, path, me, deadline, { value: amtIn });
+    } else if (to.addr==="ETH_NATIVE"){
+      // approve dulu
+      const t = new ethers.Contract(from.addr, ERC20_ABI, signer);
+      const alw = await t.allowance(me, routerAddr);
+      if (alw.lt(amtIn)){ const a = await t.approve(routerAddr, amtIn); log("⏳ Approve: "+a.hash); await a.wait(); }
+      tx = await r.swapExactTokensForETH(amtIn, outMin, path, me, deadline);
+    } else {
+      // token → token
+      const t = new ethers.Contract(from.addr, ERC20_ABI, signer);
+      const alw = await t.allowance(me, routerAddr);
+      if (alw.lt(amtIn)){ const a = await t.approve(routerAddr, amtIn); log("⏳ Approve: "+a.hash); await a.wait(); }
+      tx = await r.swapExactTokensForTokens(amtIn, outMin, path, me, deadline);
+    }
+
+    log("⏳ TX: " + tx.hash);
+    const rc = await tx.wait();
+    log(`✅ Swap success • Block ${rc.blockNumber} • https://sepolia.etherscan.io/tx/${tx.hash}`);
+  }catch(e){
+    log("❌ Swap error: " + (e.reason || e.data?.message || e.message || e));
   }
 }
 
-document.getElementById("test").onclick = fetchQuote;
+/** ===== UI Bind ===== */
+$("btnConnect").onclick = connect;
+$("fromAmt").oninput = estimate;
+$("btnSwap").onclick = swap;
+
+$("fromToken").onclick = ()=>{
+  // toggle sederhana WETH/USDC/ETH (kalau mau pakai native)
+  if (from===TOKENS.WETH){ from=TOKENS.USDC; $("fromToken").textContent="USDC"; }
+  else if (from===TOKENS.USDC){ from=TOKENS.ETH; $("fromToken").textContent="ETH"; }
+  else { from=TOKENS.WETH; $("fromToken").textContent="WETH"; }
+  estimate();
+};
+$("toToken").onclick = ()=>{
+  if (to===TOKENS.USDC){ to=TOKENS.WETH; $("toToken").textContent="WETH"; }
+  else if (to===TOKENS.WETH){ to=TOKENS.ETH; $("toToken").textContent="ETH"; }
+  else { to=TOKENS.USDC; $("toToken").textContent="USDC"; }
+  estimate();
+};
 </script>
 </body>
 </html>
