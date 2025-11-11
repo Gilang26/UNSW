@@ -4,90 +4,100 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>UNISWOP • Sepolia</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 <style>
 :root{
-  --bg:#0b0e17; --grad1:#1a1230; --panel:#0e1426; --border:#1e2740;
-  --chip:#121a2f; --chip2:#0b1124; --txt:#f7f7fb; --mut:#9aa3b2;
+  --bg:#0b0e17; --grad1:#1a1230;
+  --panel:#0e1426; --border:#1e2740;
+  --txt:#f7f7fb; --mut:#a0a8bf;
   --p1:#ff4ecd; --p2:#ff007a;
+  --field:#101b35; --field2:#0b1124;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0; color:var(--txt); font-family:Inter,system-ui,sans-serif;
-  background: radial-gradient(circle at 30% -20%, var(--grad1) 0%, var(--bg) 60%);
+  background: radial-gradient(circle at 25% -20%, var(--grad1), var(--bg) 65%);
   display:flex; flex-direction:column;
 }
-/* Header */
 .header{max-width:980px;margin:0 auto;padding:14px 16px 0;display:flex;align-items:center;gap:10px}
-.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px}
 .brand svg{width:26px;height:26px}
-.tabs{display:flex;gap:8px;margin-left:6px}
-.tab{padding:8px 12px;border-radius:10px;background:transparent;color:#cbd5e1;border:1px solid transparent;cursor:pointer}
-.tab.active{border:1px solid var(--border);background:#121a2f;color:#fff}
 .grow{flex:1}
-.right{display:flex;align-items:center;gap:10px}
-.chip{background:#101834;border:1px solid var(--border);padding:8px 10px;border-radius:12px;color:#d8def0;font-size:12px}
-.btn{border:0;border-radius:12px;padding:9px 14px;background:linear-gradient(90deg,var(--p1),var(--p2));color:#fff;font-weight:700;cursor:pointer}
+.btn{background:linear-gradient(90deg,var(--p1),var(--p2));border:0;color:#fff;font-weight:700;padding:9px 14px;border-radius:12px;cursor:pointer}
+.chip{background:#121a2f;border:1px solid var(--border);padding:8px 10px;border-radius:12px;font-size:12px;color:#d4d7e6}
 
-/* Main Card */
-.main{flex:1;display:flex;justify-content:center;align-items:center;padding:16px}
+.main{flex:1;display:flex;justify-content:center;align-items:center;padding:18px}
 .card{
-  width:100%; max-width:520px; background:var(--panel);
-  border:1px solid var(--border); border-radius:16px; padding:18px;
-  box-shadow:0 14px 40px rgba(0,0,0,.35); margin:0 auto;
+  width:100%;max-width:520px;background:var(--panel);
+  border:1px solid var(--border);border-radius:18px;padding:20px;
+  box-shadow:0 10px 36px rgba(0,0,0,.4); margin:0 auto;
 }
-.panel{background:#0a1020;border:1px solid var(--border);border-radius:16px;padding:14px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;border-radius:12px;background:#0b1124;border:1px solid #1c2742}
-.tkbtn{display:flex;align-items:center;gap:8px;border:1px solid #283455;background:#121a30;border-radius:12px;padding:8px 10px;cursor:pointer;color:#fff;font-weight:700;min-width:112px;justify-content:center}
-.sym{background:#1b2542;border-radius:50%;width:24px;height:24px;display:grid;place-items:center;font-size:11px}
-.inp{flex:1;text-align:right;background:transparent;border:0;color:#fff;font-size:22px;font-weight:700;outline:none}
-.info{display:flex;justify-content:space-between;font-size:12px;color:#aeb9d0;margin-top:6px}
-.centerbtn{display:flex;justify-content:center;align-items:center;margin:-6px 0 2px}
-.centerbtn button{background:#18203a;border:1px solid #283455;border-radius:50%;width:36px;height:36px;display:grid;place-items:center;cursor:pointer}
-.btnxl{width:100%;padding:14px;border-radius:14px;border:0;background:linear-gradient(90deg,var(--p1),var(--p2));color:#fff;font-weight:800;cursor:pointer;margin-top:10px}
+.panel{background:var(--field2);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
 
-/* Token modal */
+/* ROW: input rata tengah, tombol token di kanan */
+.row{
+  display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px;
+  background:var(--field); border:1px solid var(--border); border-radius:12px; padding:12px 14px;
+}
+.inp{
+  width:100%; text-align:right; background:transparent; border:0; color:#fff;
+  font-size:22px; font-weight:700; outline:none;
+}
+.tkbtn{
+  display:flex; align-items:center; gap:8px; border:1px solid #283455;
+  background:#121a30; border-radius:12px; padding:8px 12px; cursor:pointer;
+  color:#fff; font-weight:600; min-width:112px; justify-content:center;
+}
+.sym{background:#1b2542;border-radius:50%;width:24px;height:24px;display:grid;place-items:center;font-size:11px}
+.info{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);padding:0 2px}
+
+.centerbtn{display:flex;justify-content:center;align-items:center;margin:-4px 0}
+.centerbtn button{
+  background:#18203a;border:1px solid #283455;border-radius:50%;
+  width:38px;height:38px;display:grid;place-items:center;cursor:pointer;transition:all .2s
+}
+.centerbtn button:hover{background:#242f54}
+
+.btnxl{width:100%;padding:14px;margin-top:6px;border-radius:14px;border:0;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--p1),var(--p2));cursor:pointer}
+pre{background:#0b1120;border:1px solid #1f2a45;color:#b7c8ff;border-radius:12px;padding:10px;font-size:12px;max-height:160px;overflow:auto;margin-top:12px}
+
+/* Modal token */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:12px;z-index:1000}
-.sheet{width:min(420px,92vw);background:#0b1120;border:1px solid var(--border);border-radius:16px;padding:14px}
+.sheet{width:min(430px,92vw);background:#0b1120;border:1px solid var(--border);border-radius:16px;padding:14px}
 .sheet h4{margin:0 0 8px}
 .search{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:#0a0f1e;color:#fff}
-.list{margin-top:10px;display:grid;gap:8px;max-height:300px;overflow:auto}
+.list{margin-top:10px;display:grid;gap:8px;max-height:320px;overflow:auto}
 .item{display:flex;align-items:center;gap:10px;border:1px solid #253152;background:#101834;border-radius:12px;padding:10px;cursor:pointer}
 .item .sym{width:26px;height:26px}
-pre{background:#0b1120;border:1px solid #1f2a45;color:#b7c8ff;border-radius:12px;padding:10px;font-size:12px;max-height:150px;overflow:auto;margin-top:10px}
 
-/* Mobile fit */
 @media (max-width:520px){
   .header{padding:10px 12px}
-  .brand{font-size:16px}
-  .btn{padding:8px 12px;font-size:13px}
+  .card{margin:0 12px}
+  .inp{font-size:20px}
 }
 </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
-    <div class="brand" title="Uniswop">
-      <!-- unicorn inline svg -->
+    <div class="brand">
+      <!-- unicorn inline -->
       <svg viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff4ecd"/><stop offset="1" stop-color="#ff007a"/></linearGradient></defs><path fill="url(#g)" d="M410 182c-9-57-59-101-119-101-66 0-120 54-120 120 0 3 0 7 1 10C118 223 80 269 80 324c0 65 53 118 118 118 57 0 106-41 116-95 55-11 98-60 98-118 0-26-8-50-22-69z"/></svg>
       UNISWOP
     </div>
-    <div class="tabs"><button class="tab active">Swap</button></div>
     <div class="grow"></div>
     <div class="chip" id="netChip">Sepolia</div>
     <button id="btnConnect" class="btn">Connect</button>
   </div>
 
-  <!-- Main -->
   <div class="main">
     <div class="card">
       <div class="panel">
         <!-- FROM -->
         <div class="row">
-          <button id="fromBtn" class="tkbtn"><span class="sym">E</span><span id="fromSym">ETH</span></button>
           <input id="fromAmt" class="inp" placeholder="0.0" inputmode="decimal"/>
+          <button id="fromBtn" class="tkbtn"><span class="sym">E</span><span id="fromSym">ETH</span></button>
         </div>
         <div class="info"><span id="fromBal">Balance: -</span><span id="estTxt">Estimasi: -</span></div>
 
@@ -100,8 +110,8 @@ pre{background:#0b1120;border:1px solid #1f2a45;color:#b7c8ff;border-radius:12px
 
         <!-- TO -->
         <div class="row">
-          <button id="toBtn" class="tkbtn"><span class="sym">U</span><span id="toSym">USDC</span></button>
           <input id="toAmt" class="inp" placeholder="0.0" disabled/>
+          <button id="toBtn" class="tkbtn"><span class="sym">U</span><span id="toSym">USDC</span></button>
         </div>
         <div class="info"><span id="toBal">Balance: -</span><span id="routerName">Router: auto</span></div>
 
@@ -115,34 +125,32 @@ pre{background:#0b1120;border:1px solid #1f2a45;color:#b7c8ff;border-radius:12px
   <div id="modal" class="modal" role="dialog" aria-modal="true">
     <div class="sheet">
       <h4>Pilih Token</h4>
-      <input id="q" class="search" placeholder="Cari simbol / alamat (0x...)"/>
+      <input id="q" class="search" placeholder="Cari simbol atau alamat (0x...)"/>
       <div id="list" class="list"></div>
     </div>
   </div>
 
 <script>
-/** ========= Config ========= **/
-const CHAIN = { id:11155111, name:"Sepolia" };
+/** ====== Config Sepolia ====== */
+const CHAIN = { id:11155111, hex:"0xaa36a7", name:"Sepolia" };
 const TOKENS = {
-  ETH:  { symbol:"ETH",  addr:"ETH",        dec:18 },
+  ETH : { symbol:"ETH",  addr:"ETH",        dec:18 },
   WETH: { symbol:"WETH", addr:"0xfff9976782d46cc05630d1f6ebab18b2324d6b14", dec:18 },
-  USDC: { symbol:"USDC", addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238", dec:6 },
+  USDC: { symbol:"USDC", addr:"0x1c7d4b196cb0c7b01d743fbc6116a902379c7238", dec:6  },
 };
-// Routers: primary + fallback
+// Routers (coba berurutan)
 const ROUTERS = [
-  { name:"RouterV2", addr:"0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3" },
+  { name:"RouterV2",  addr:"0xeE567Fe1712Faf6149d80dA1E6934E354124CfE3" },
   { name:"RouterAlt", addr:"0x3A9D48AB9751398BbFa63ad67599Bb04e4BdF98b" },
 ];
+
 const ERC20_ABI=[
   "function balanceOf(address) view returns (uint256)",
   "function allowance(address,address) view returns (uint256)",
   "function approve(address,uint256) returns (bool)",
-  "function decimals() view returns (uint8)"
-];
-const WETH_ABI=[
-  "function deposit() payable",
-  "function withdraw(uint256)",
-  "function balanceOf(address) view returns (uint256)"
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
+  "function name() view returns (string)"
 ];
 const ROUTER_ABI=[
   "function getAmountsOut(uint256,address[]) view returns (uint256[])",
@@ -158,7 +166,12 @@ let provider, signer, me;
 let from=TOKENS.ETH, to=TOKENS.USDC;
 let whichSelecting="from";
 
-/** ========= Wallet ========= **/
+/** ===== Helpers ===== */
+function isETH(t){ return t.addr==="ETH"; }
+function addrOrWETH(t){ return isETH(t)? TOKENS.WETH.addr : t.addr; }
+function format(n,dec=6){ try{ return Number(n).toLocaleString(undefined,{maximumFractionDigits:dec}); }catch{return n} }
+
+/** ===== Wallet ===== */
 async function connect(){
   try{
     if(!window.ethereum) throw new Error("Install MetaMask dulu");
@@ -167,7 +180,7 @@ async function connect(){
     signer=provider.getSigner(); me=await signer.getAddress();
     const net=await provider.getNetwork();
     if (net.chainId!==CHAIN.id){
-      await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0xaa36a7"}]}); // Sepolia
+      await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{chainId:CHAIN.hex}] });
     }
     $("netChip").textContent=CHAIN.name;
     log(`✅ Connected: ${me} • Chain: ${CHAIN.id}`);
@@ -175,41 +188,11 @@ async function connect(){
   }catch(e){ log("❌ Connect error: "+(e.message||e)); }
 }
 
-/** ========= UI helpers ========= **/
-function format(n,dec=6){ try{ return Number(n).toLocaleString(undefined,{maximumFractionDigits:dec}); }catch{return n} }
-function isETH(token){ return token.addr==="ETH"; }
-function addrOrWETH(token){ return isETH(token)? TOKENS.WETH.addr : token.addr; }
-
-/** ========= Modal ========= **/
-function openModal(which){
-  whichSelecting=which;
-  const L=$("list"); L.innerHTML="";
-  Object.values(TOKENS).forEach(t=>{
-    const item=document.createElement("div");
-    item.className="item";
-    item.innerHTML=`<span class="sym">${t.symbol[0]}</span><div><div style="font-weight:700">${t.symbol}</div><div style="font-size:12px;color:#9fb0ff">${t.addr==='ETH'?'Native ETH':t.addr}</div></div>`;
-    item.onclick=()=>{ selectToken(t); };
-    L.appendChild(item);
-  });
-  $("modal").style.display="flex";
-}
-function closeModal(){ $("modal").style.display="none"; }
-function selectToken(t){
-  if(whichSelecting==="from"){
-    from=t; $("fromSym").textContent=t.symbol;
-  }else{
-    to=t; $("toSym").textContent=t.symbol;
-  }
-  closeModal();
-  refreshBalances();
-  estimate(); // refresh est
-}
-
-/** ========= Balances ========= **/
+/** ===== Balances ===== */
 async function refreshBalances(){
-  if(!provider || !me) return;
+  if(!provider||!me) return;
   try{
-    // from balance
+    // from
     if(isETH(from)){
       const bal = await provider.getBalance(me);
       $("fromBal").textContent = "Balance: "+format(ethers.utils.formatEther(bal),4);
@@ -218,7 +201,7 @@ async function refreshBalances(){
       const bal=await c.balanceOf(me);
       $("fromBal").textContent = "Balance: "+format(ethers.utils.formatUnits(bal, from.dec),4);
     }
-    // to balance (info)
+    // to
     if(isETH(to)){
       const bal = await provider.getBalance(me);
       $("toBal").textContent = "Balance: "+format(ethers.utils.formatEther(bal),4);
@@ -228,22 +211,24 @@ async function refreshBalances(){
       $("toBal").textContent = "Balance: "+format(ethers.utils.formatUnits(bal, to.dec),4);
     }
   }catch(e){
-    $("fromBal").textContent="Balance: -"; $("toBal").textContent="Balance: -";
+    $("fromBal").textContent="Balance: -";
+    $("toBal").textContent="Balance: -";
   }
 }
 
-/** ========= Estimation ========= **/
+/** ===== Estimation ===== */
 async function estimate(){
   try{
     if(!provider) return;
     const v=$("fromAmt").value.trim();
     if(!v || Number(v)<=0){ $("toAmt").value=""; $("estTxt").textContent="Estimasi: -"; return; }
-    const amtIn = isETH(from)
-      ? ethers.utils.parseUnits(v, 18)
-      : ethers.utils.parseUnits(v, from.dec);
 
+    const amtIn = ethers.utils.parseUnits(
+      v,
+      isETH(from)?18:from.dec
+    );
     const path = [ addrOrWETH(from), addrOrWETH(to) ];
-    // try routers
+
     for (const r of ROUTERS){
       try{
         const router=new ethers.Contract(r.addr, ROUTER_ABI, provider);
@@ -254,15 +239,77 @@ async function estimate(){
         $("estTxt").textContent = "Estimasi: " + human + " " + to.symbol;
         $("routerName").textContent = "Router: " + r.name;
         return;
-      }catch{} // try next
+      }catch{} // fallback ke router berikutnya
     }
-    $("estTxt").textContent="Estimasi gagal (no liquidity)"; $("routerName").textContent="Router: auto";
+    $("estTxt").textContent="Estimasi gagal (no liquidity)";
+    $("routerName").textContent="Router: auto";
   }catch(e){
-    $("estTxt").textContent="Estimasi gagal"; $("routerName").textContent="Router: auto";
+    $("estTxt").textContent="Estimasi gagal";
+    $("routerName").textContent="Router: auto";
   }
 }
 
-/** ========= Swap ========= **/
+/** ===== Token Modal ===== */
+function openModal(which){
+  whichSelecting=which;
+  renderTokenList("");
+  $("modal").style.display="flex";
+}
+function closeModal(){ $("modal").style.display="none"; }
+$("modal").onclick=(e)=>{ if(e.target.id==="modal") closeModal(); }
+$("q").oninput=()=>renderTokenList($("q").value.trim());
+
+function renderTokenList(q){
+  const L=$("list"); L.innerHTML="";
+  const all = Object.values(TOKENS);
+  let view = all;
+
+  // Jika input 0x..., coba add token baru (lazy)
+  if(/^0x[a-fA-F0-9]{40}$/.test(q)){
+    view = [...all, {symbol:"(Tambah)", addr:q, dec:"?", _new:true}];
+  }else if(q){
+    view = all.filter(t=> t.symbol.toLowerCase().includes(q.toLowerCase()) || (t.addr!=="ETH" && t.addr.toLowerCase().includes(q.toLowerCase())));
+  }
+
+  for (const t of view){
+    const item=document.createElement("div");
+    item.className="item";
+    const addrLabel = t.addr==="ETH" ? "Native ETH" : t.addr;
+    item.innerHTML=`<span class="sym">${t.symbol[0]}</span>
+      <div><div style="font-weight:700">${t.symbol}${t._new?' ➕':''}</div>
+      <div style="font-size:12px;color:#9fb0ff">${addrLabel}</div></div>`;
+    item.onclick=()=>selectToken(t);
+    L.appendChild(item);
+  }
+}
+
+async function selectToken(t){
+  // jika token baru dari input 0x..., resolve decimals & symbol
+  if(t._new){
+    try{
+      const c=new ethers.Contract(t.addr, ERC20_ABI, provider||new ethers.providers.Web3Provider(window.ethereum,"any"));
+      let dec=await c.decimals().catch(()=>18);
+      let sym=await c.symbol().catch(()=>("TOK"+t.addr.slice(2,6)));
+      TOKENS[sym] = { symbol:sym, addr:t.addr, dec:Number(dec) };
+      t = TOKENS[sym];
+      log(`➕ Token ditambahkan: ${sym} (${t.addr}), dec=${t.dec}`);
+    }catch(e){
+      log("⚠️ Gagal membaca token baru: "+(e.message||e));
+      return;
+    }
+  }
+
+  if(whichSelecting==="from"){
+    from=t; $("fromSym").textContent=t.symbol;
+  }else{
+    to=t; $("toSym").textContent=t.symbol;
+  }
+  closeModal();
+  refreshBalances();
+  estimate();
+}
+
+/** ===== Swap ===== */
 async function ensureAllowance(token, spender, need){
   const c=new ethers.Contract(token.addr, ERC20_ABI, signer);
   const alw=await c.allowance(me, spender);
@@ -272,84 +319,73 @@ async function ensureAllowance(token, spender, need){
   await tx.wait();
   log("✅ Approve success");
 }
+
 async function doSwap(){
   try{
     if(!signer) await connect();
     const v=$("fromAmt").value.trim(); if(!v || Number(v)<=0) return log("⚠️ Masukkan jumlah dulu");
-    // choose working router
+
+    // pilih router workable
     let routerAddr=null, routerName=null, router=null;
+    const path=[ addrOrWETH(from), addrOrWETH(to) ];
     for (const r of ROUTERS){
-      try{ router=new ethers.Contract(r.addr, ROUTER_ABI, signer); await router.callStatic.getAmountsOut(1,[addrOrWETH(from),addrOrWETH(to)]); routerAddr=r.addr; routerName=r.name; break; }
-      catch{}
+      try{
+        const test=new ethers.Contract(r.addr, ROUTER_ABI, signer);
+        await test.callStatic.getAmountsOut(1, path);
+        router = test; routerAddr=r.addr; routerName=r.name; break;
+      }catch{}
     }
-    if(!routerAddr) return log("❌ Tidak ada router yang valid");
+    if(!routerAddr) return log("❌ Tidak ada router yang valid (cek LP)");
 
     const deadline = Math.floor(Date.now()/1000)+900;
-    const path=[ addrOrWETH(from), addrOrWETH(to) ];
-    const amtIn = isETH(from) ? ethers.utils.parseEther(v) : ethers.utils.parseUnits(v, from.dec);
-
-    // minimal output 0 (tanpa slippage agar simpel)
-    const minOut = 0;
+    const amtIn = ethers.utils.parseUnits(v, isETH(from)?18:from.dec);
+    const minOut = 0; // simple
 
     log(`🚀 Swap via ${routerName} (${routerAddr})`);
-
     let tx;
     if (isETH(from) && !isETH(to)){
-      // ETH → token
-      tx = await router.swapExactETHForTokens(
-        minOut, path, me, deadline, { value: amtIn }
-      );
+      tx = await router.swapExactETHForTokens(minOut, path, me, deadline, { value: amtIn });
     } else if (!isETH(from) && isETH(to)){
-      // token → ETH
       await ensureAllowance(from, routerAddr, amtIn);
-      tx = await router.swapExactTokensForETH(
-        amtIn, minOut, path, me, deadline
-      );
+      tx = await router.swapExactTokensForETH(amtIn, minOut, path, me, deadline);
     } else {
-      // token → token
       await ensureAllowance(from, routerAddr, amtIn);
-      tx = await router.swapExactTokensForTokens(
-        amtIn, minOut, path, me, deadline
-      );
+      tx = await router.swapExactTokensForTokens(amtIn, minOut, path, me, deadline);
     }
     log("⏳ TX: "+tx.hash);
     const rc=await tx.wait();
     log(`✅ Swap success • Block ${rc.blockNumber}`);
     refreshBalances();
+    estimate();
   }catch(e){
     log("❌ Swap error: "+(e.reason||e.data?.message||e.message||e));
   }
 }
 
-/** ========= Flip ========= **/
+/** ===== Flip ===== */
 function flipTokens(){
   const tmp=from; from=to; to=tmp;
   $("fromSym").textContent=from.symbol;
   $("toSym").textContent=to.symbol;
-  // swap input/output field values visually:
   const a=$("fromAmt").value, b=$("toAmt").value;
   $("fromAmt").value=b; $("toAmt").value=a;
-  refreshBalances(); estimate();
+  refreshBalances();
+  estimate();
 }
 
-/** ========= Wrap/Unwrap helper (optional quick actions) ========= **/
-async function wrapIfNeeded(){
-  if(!signer) await connect();
-  if (!isETH(from) && !isETH(to)) return; // not used here, but helper kept
-}
-  
-/** ========= Bindings ========= **/
+/** ===== Bindings ===== */
 $("btnConnect").onclick=connect;
 $("fromBtn").onclick=()=>openModal("from");
 $("toBtn").onclick=()=>openModal("to");
-$("modal").onclick=(e)=>{ if(e.target.id==="modal") closeModal(); };
-$("q").oninput=()=>{ /* simple static list; search optional */ };
-$("fromAmt").oninput=()=>{ estimate(); };
+$("fromAmt").oninput=estimate;
 $("flipBtn").onclick=flipTokens;
 $("swapBtn").onclick=doSwap;
 
-// init defaults
-window.addEventListener("load", ()=>{ $("fromSym").textContent=from.symbol; $("toSym").textContent=to.symbol; });
+// init
+window.addEventListener("load", ()=>{
+  $("fromSym").textContent=from.symbol;
+  $("toSym").textContent=to.symbol;
+});
 </script>
 </body>
 </html>
